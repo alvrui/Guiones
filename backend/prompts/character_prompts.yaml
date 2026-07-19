@@ -1,0 +1,238 @@
+# Prompts para generación de contenido de Personajes
+
+# Generación de trasfondo
+trasfondo: |
+  Eres un experto en desarrollo de personajes para guiones de {estilo} con tono {tono_general}.
+  Genera un trasfondo detallado y coherente para el siguiente personaje:
+  
+  **Contexto del proyecto:**
+  - Título: {titulo_proyecto}
+  - Contexto histórico: {contexto_historico}
+  - Contexto social: {contexto_social}
+  - Contexto geográfico: {contexto_geografico}
+  
+  **Datos del personaje:**
+  - Nombre: {nombre}
+  - Edad: {edad}
+  - Arquetipo: {arquetipo}
+  - Objetivos: {objetivos}
+  - Motivaciones: {motivaciones}
+  
+  **Instrucciones:**
+  1. El trasfondo debe explicar el origen del personaje y las experiencias clave que lo definen.
+  2. Debe justificar sus motivaciones y objetivos de manera coherente.
+  3. Integra el contexto histórico, social y geográfico del proyecto.
+  4. Usa un estilo narrativo acorde al tono general ({tono_general}).
+  5. El texto debe tener entre 100 y 300 palabras.
+  6. Escribe en tercera persona.
+  7. Evita descripciones genéricas; sé específico y creativo.
+  
+  **Ejemplo de formato:**
+  "Juan Pérez creció en un pueblo pesquero de Andalucía durante la Guerra Civil Española. A los 10 años, presenció el asesinato de su familia por parte de las tropas franquistas, lo que lo marcó para siempre. Este evento lo llevó a jurar venganza, pero también a cuestionar el valor de la justicia en un mundo en guerra..."
+
+
+# Generación de personalidad
+personalidad: |
+  Eres un psicólogo especializado en personajes de ficción para guiones de {estilo}.
+  Define la personalidad de {nombre}, un {arquetipo} de {edad} años, en el contexto de una historia con tono {tono_general}.
+  
+  **Datos del personaje:**
+  - Trasfondo: {trasfondo}
+  - Motivaciones: {motivaciones}
+  - Conflictos internos: {conflictos_internos}
+  - Conflictos externos: {conflictos_externos}
+  
+  **Instrucciones:**
+  1. Describe 3-5 rasgos principales de su personalidad (ej: inteligente, arrogante, compasivo, temerario).
+  2. Explica cómo estos rasgos se relacionan con su trasfondo y experiencias.
+  3. Incluye tanto fortalezas como debilidades psicológicas.
+  4. Sé coherente con su arquetipo ({arquetipo}).
+  5. El texto debe tener entre 50 y 150 palabras.
+  6. Usa un lenguaje claro y descriptivo.
+  
+  **Ejemplo:**
+  "Inteligente pero arrogante, Juan usa su astucia para manipular situaciones a su favor, pero su orgullo lo lleva a subestimar a sus enemigos. Su trauma lo ha vuelto desconfiado, aunque en el fondo anhela redención. Esta dualidad lo hace humano y complejo."
+
+
+# Generación de objetivos
+objetivos: |
+  Eres un experto en desarrollo de personajes para guiones.
+  Genera 3 objetivos claros y motivadores para {nombre}, un {arquetipo} de {edad} años, en una historia de {estilo} con tono {tono_general}.
+  
+  **Datos del personaje:**
+  - Trasfondo: {trasfondo}
+  - Motivaciones: {motivaciones}
+  - Conflictos internos: {conflictos_internos}
+  
+  **Instrucciones:**
+  1. Los objetivos deben ser específicos, medibles y relevantes para la historia.
+  2. Deben reflejar sus motivaciones profundas.
+  3. Incluye al menos un objetivo emocional (ej: "encontrar la paz") y uno práctico (ej: "recuperar el tesoro").
+  4. Usa verbos de acción (ej: "encontrar", "vengarse", "proteger", "descubrir").
+  5. Devuelve solo una lista de strings, sin numeración ni viñetas.
+  
+  **Ejemplo:**
+  ["Encontrar al asesino de su familia", "Recuperar el honor de su nombre", "Aprender a perdonar"]
+
+
+# Generación de motivaciones
+motivaciones: |
+  Eres un experto en desarrollo de personajes para guiones de {estilo}.
+  Genera una descripción de las motivaciones profundas de {nombre}, un {arquetipo} de {edad} años.
+  
+  **Datos del personaje:**
+  - Trasfondo: {trasfondo}
+  - Objetivos: {objetivos}
+  - Conflictos internos: {conflictos_internos}
+  
+  **Instrucciones:**
+  1. Explica qué impulsos emocionales o morales lo mueven (ej: amor, miedo, justicia, venganza).
+  2. Conecta sus motivaciones con su trasfondo y objetivos.
+  3. Sé profundo pero conciso (entre 50 y 150 palabras).
+  4. Usa un lenguaje emotivo y descriptivo.
+  
+  **Ejemplo:**
+  "El deseo de justicia por la muerte de su familia es lo que mantiene a Juan en movimiento. No es solo venganza lo que busca, sino la necesidad de restaurar el equilibrio en un mundo que le arrebató todo. Sin embargo, en el fondo, teme que la violencia lo consuma y lo convierta en lo que más odia."
+
+
+# Generación de conflictos internos
+conflictos_internos: |
+  Eres un experto en desarrollo de personajes para guiones de {estilo}.
+  Genera una descripción de los conflictos internos de {nombre}, un {arquetipo} de {edad} años.
+  
+  **Datos del personaje:**
+  - Trasfondo: {trasfondo}
+  - Personalidad: {personalidad}
+  - Objetivos: {objetivos}
+  
+  **Instrucciones:**
+  1. Describe 1-2 luchas psicológicas o emocionales clave (ej: "duda entre el perdón y la venganza").
+  2. Explica cómo estos conflictos afectan sus decisiones.
+  3. Sé específico y evita clichés.
+  4. El texto debe tener entre 30 y 100 palabras.
+  
+  **Ejemplo:**
+  "Juan lucha constantemente entre su deseo de venganza y su anhelo de paz. Sabe que la violencia solo traerá más dolor, pero no puede evitar sentir que la justicia debe ser servida. Esta dualidad lo paraliza en momentos clave."
+
+
+# Generación de conflictos externos
+conflictos_externos: |
+  Eres un experto en desarrollo de personajes para guiones de {estilo}.
+  Genera una descripción de los conflictos externos de {nombre}, un {arquetipo} de {edad} años.
+  
+  **Datos del personaje:**
+  - Trasfondo: {trasfondo}
+  - Arquetipo: {arquetipo}
+  - Objetivos: {objetivos}
+  
+  **Instrucciones:**
+  1. Describe 1-2 obstáculos físicos, sociales o ambientales que enfrenta.
+  2. Estos pueden ser enemigos, limitaciones físicas, presiones sociales, etc.
+  3. Sé específico y relevante para la historia.
+  4. El texto debe tener entre 30 y 100 palabras.
+  
+  **Ejemplo:**
+  "El principal obstáculo de Juan es el Coronel Mendoza, el hombre que ordenó la muerte de su familia. Además, la sociedad rural en la que vive desconfía de él por su pasado violento, lo que dificulta su búsqueda de aliados."
+
+
+# Generación de relaciones
+relaciones: |
+  Eres un experto en desarrollo de personajes para guiones de {estilo}.
+  Genera 2-3 relaciones significativas para {nombre}, un {arquetipo} de {edad} años, en una historia con tono {tono_general}.
+  
+  **Datos del personaje:**
+  - Trasfondo: {trasfondo}
+  - Objetivos: {objetivos}
+  - Motivaciones: {motivaciones}
+  
+  **Instrucciones:**
+  1. Cada relación debe incluir: nombre, tipo de relación (ej: "Esposa", "Rival", "Mentor") y una breve descripción.
+  2. Las relaciones deben ser relevantes para su desarrollo como personaje.
+  3. Incluye al menos un aliado y un antagonista.
+  4. Devuelve una lista de objetos JSON con los campos: nombre, relacion, descripcion.
+  
+  **Ejemplo:**
+  [
+    {"nombre": "María López", "relacion": "Esposa", "descripcion": "Su apoyo emocional, aunque a veces duda de sus métodos."},
+    {"nombre": "Coronel Mendoza", "relacion": "Antagonista", "descripcion": "El hombre que destruyó su vida y ahora es su objetivo."},
+    {"nombre": "Carlos Pérez", "relacion": "Hermano", "descripcion": "Desaparecido durante la guerra, su búsqueda lo mantiene en movimiento."}
+  ]
+
+
+# Generación de evolución
+evolucion: |
+  Eres un experto en desarrollo de personajes para guiones de {estilo}.
+  Describe cómo evoluciona {nombre}, un {arquetipo}, a lo largo de la historia.
+  
+  **Datos del personaje:**
+  - Trasfondo: {trasfondo}
+  - Personalidad: {personalidad}
+  - Objetivos: {objetivos}
+  - Conflictos internos: {conflictos_internos}
+  
+  **Instrucciones:**
+  1. Describe los cambios clave en su personalidad, creencias o motivaciones.
+  2. Explica qué eventos o experiencias impulsan estos cambios.
+  3. Conecta su evolución con el arco narrativo general.
+  4. El texto debe tener entre 50 y 150 palabras.
+  
+  **Ejemplo:**
+  "A lo largo de la historia, Juan pasa de ser un hombre consumido por el odio a alguien que entiende el valor del perdón. La muerte de su hermano menor, a manos de quien él creía un aliado, lo obliga a cuestionar su camino. Al final, elige la redención sobre la venganza, encontrando paz en la memoria de su familia."
+
+
+# Generación de apariencia física
+apariencia_fisica: |
+  Eres un experto en desarrollo de personajes para guiones de {estilo}.
+  Describe la apariencia física de {nombre}, un {arquetipo} de {edad} años, en una historia ambientada en {contexto_geografico}.
+  
+  **Datos del personaje:**
+  - Edad: {edad}
+  - Género: {genero}
+  - Trasfondo: {trasfondo}
+  
+  **Instrucciones:**
+  1. Describe altura, complexión, rasgos faciales, cabello, ojos, etc.
+  2. Incluye detalles que reflejen su trasfondo (ej: cicatrices, ropa, postura).
+  3. Sé específico y visual.
+  4. El texto debe tener entre 30 y 100 palabras.
+  
+  **Ejemplo:**
+  "Alto y delgado, con el cabello oscuro y despeinado por el viento del mar. Una cicatriz en la mejilla izquierda, souvenir de su primer enfrentamiento con el Coronel. Sus ojos verdes, fríos como el acero, delatan una determinación que pocos se atreven a desafiar."
+
+
+# Generación de habilidades
+habilidades: |
+  Eres un experto en desarrollo de personajes para guiones de {estilo}.
+  Genera una lista de 3-5 habilidades o talentos para {nombre}, un {arquetipo} de {edad} años.
+  
+  **Datos del personaje:**
+  - Trasfondo: {trasfondo}
+  - Arquetipo: {arquetipo}
+  - Objetivos: {objetivos}
+  
+  **Instrucciones:**
+  1. Las habilidades deben ser relevantes para su trasfondo y su papel en la historia.
+  2. Incluye tanto habilidades físicas como mentales o sociales.
+  3. Devuelve solo una lista de strings.
+  
+  **Ejemplo:**
+  ["Lucha cuerpo a cuerpo", "Persuasión", "Conocimiento de tácticas militares", "Resistencia al dolor"]
+
+
+# Generación de debilidades
+debilidades: |
+  Eres un experto en desarrollo de personajes para guiones de {estilo}.
+  Genera una lista de 2-3 debilidades o vulnerabilidades para {nombre}, un {arquetipo} de {edad} años.
+  
+  **Datos del personaje:**
+  - Trasfondo: {trasfondo}
+  - Personalidad: {personalidad}
+  - Conflictos internos: {conflictos_internos}
+  
+  **Instrucciones:**
+  1. Las debilidades pueden ser físicas, emocionales o psicológicas.
+  2. Deben ser relevantes para la trama y su desarrollo como personaje.
+  3. Devuelve solo una lista de strings.
+  
+  **Ejemplo:**
+  ["Miedo a la altura", "Desconfiado de los extraños", "Tendencia a actuar impulsivamente"]

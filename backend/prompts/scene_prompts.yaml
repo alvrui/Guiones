@@ -1,0 +1,172 @@
+# Prompts para generación de contenido de Escenas
+
+# Generación de texto de escena
+texto_escena: |
+  Eres un experto en escritura de guiones para {estilo} con tono {tono_general}.
+  Escribe el texto completo de la siguiente escena:
+  
+  **Datos de la escena:**
+  - Título: {titulo}
+  - Ubicación: {ubicacion}
+  - Personajes involucrados: {personajes_involucrados}
+  - Elementos narrativos: {elementos_narrativos}
+  - Duración estimada: {duracion_estimada}
+  - Notas de dirección: {notas_direccion}
+  
+  **Contexto adicional:**
+  - Trasfondo de los personajes: {trasfondos}
+  - Objetivos de los personajes: {objetivos}
+  - Conflictos actuales: {conflictos}
+  
+  **Instrucciones:**
+  1. El texto debe incluir:
+     - **Descripciones ambientales:** Usa los 5 sentidos para sumergir al lector (olores, sonidos, texturas, etc.).
+     - **Diálogos:** Naturales, con voz propia para cada personaje. Usa acotaciones para acciones (ej: "Juan mira al horizonte, con los puños apretados").
+     - **Acciones:** Describe las acciones físicas de los personajes.
+     - **Emociones:** Transmite el estado emocional de los personajes.
+  2. La escena debe:
+     - Avanzar la trama o desarrollar personajes.
+     - Ser coherente con el tono general ({tono_general}).
+     - Mantener la tensión o el ritmo adecuado.
+  3. Usa el formato estándar de guiones:
+     - **Ubicación:** En mayúsculas al inicio.
+     - **Personajes:** En mayúsculas antes de sus diálogos.
+     - **Diálogos:** Centrados, con acotaciones entre paréntesis si es necesario.
+     - **Descripciones:** En párrafos normales.
+  4. El texto debe tener entre 200 y 500 palabras (ajustado a la duración estimada).
+  
+  **Ejemplo de formato:**
+  """
+  INTERIOR - CASA DE JUAN - NOCHE
+  
+  La casa huele a madera vieja y a café recién hecho. Una lámpara de aceite proyecta sombras danzantes en las paredes. JUAN PÉREZ, alto y con una cicatriz en la mejilla, mira por la ventana. Sus ojos reflejan la luz de la luna.
+  
+  MARÍA LÓPEZ entra, con una taza de café en las manos. Su vestido azul contrasta con el ambiente oscuro.
+  
+  MARÍA
+  (suave, pero firme)
+  No puedes seguir así, Juan. El odio te está consumiendo.
+  
+  JUAN
+  (sin apartar la vista de la ventana)
+  No puedo olvidar lo que hizo. No después de todo lo que hemos perdido.
+  
+  MARÍA se acerca y coloca una mano en su hombro. Él tensa los músculos, pero no se aparta.
+  
+  MARÍA
+  (con lágrimas en los ojos)
+  Piensa en nosotros. En el futuro que podríamos tener.
+  
+  JUAN cierra los ojos. Por primera vez en años, una lágrima resbala por su mejilla.
+  """
+
+
+# Generación de notas de dirección
+notas_direccion: |
+  Eres un director de cine especializado en {estilo} con tono {tono_general}.
+  Genera notas de dirección detalladas para la siguiente escena:
+  
+  **Datos de la escena:**
+  - Título: {titulo}
+  - Ubicación: {ubicacion}
+  - Personajes involucrados: {personajes_involucrados}
+  - Texto de la escena: {texto_escena}
+  - Duración estimada: {duracion_estimada}
+  
+  **Instrucciones:**
+  1. Las notas deben incluir:
+     - **Movimientos de cámara:** Planos (detalle, medio, general), ángulos, movimientos (travelling, paneo, etc.).
+     - **Iluminación:** Tipo de luz (dura, suave), colores, sombras.
+     - **Sonido:** Música de fondo, efectos de sonido, silencio.
+     - **Actuación:** Indicaciones para los actores (tono de voz, gestos, expresiones).
+     - **Vestuario y maquillaje:** Detalles relevantes para la escena.
+  2. Sé específico y técnico, pero claro.
+  3. El texto debe tener entre 100 y 300 palabras.
+  
+  **Ejemplo:**
+  "Plano secuencia inicial desde la ventana hacia Juan, con la cámara moviéndose lentamente para revelar su expresión de dolor. Usar luz dura con sombras marcadas para resaltar su cicatriz. Sonido ambiente de grillos y viento. María debe entrar con pasitos suaves, vestida con tonos azules que contrasten con el ambiente oscuro. La música debe ser una melodía de violines en tono menor, que aumente la tensión. En el primer plano de Juan, usar un close-up para captar la lágrima que cae."
+
+
+# Generación de diálogos
+dialogos: |
+  Eres un experto en escritura de diálogos para guiones de {estilo} con tono {tono_general}.
+  Genera un diálogo entre los siguientes personajes para la escena '{titulo}':
+  
+  **Datos de la escena:**
+  - Ubicación: {ubicacion}
+  - Personajes involucrados: {personajes_involucrados}
+  - Contexto: {contexto}
+  - Objetivo de la escena: {objetivo}
+  
+  **Datos de los personajes:**
+  {personajes_detalles}
+  
+  **Instrucciones:**
+  1. El diálogo debe:
+     - Ser natural y fluido.
+     - Reflejar la personalidad y trasfondo de cada personaje.
+     - Avanzar la trama o desarrollar relaciones.
+     - Incluir subtexto (lo que no se dice pero se siente).
+  2. Usa acotaciones para describir acciones o tonos de voz.
+  3. El diálogo debe tener entre 10 y 20 líneas (5-10 por personaje).
+  4. Formato: NOMBRE (acotación opcional): Diálogo
+  
+  **Ejemplo:**
+  JUAN (mirando al suelo, con voz ronca):
+  No sé si puedo hacerlo, María. No después de todo lo que ha pasado.
+  
+  MARÍA (acercándose, con voz suave pero firme):
+  No es por ti, Juan. Es por nosotros. Por el futuro que merecemos.
+  
+  JUAN (levantando la vista, con ojos llenos de duda):
+  ¿Y si no soy lo suficientemente fuerte?
+  
+  MARÍA (sonriendo ligeramente):
+  Ya lo eres. Solo necesitas creértelo.
+
+
+# Generación de descripción de ubicación
+ubicacion: |
+  Eres un experto en descripción de escenarios para guiones de {estilo}.
+  Describe la ubicación de la siguiente escena de manera detallada y evocadora:
+  
+  **Datos de la escena:**
+  - Título: {titulo}
+  - Ubicación actual: {ubicacion_actual}
+  - Tono: {tono_general}
+  - Personajes involucrados: {personajes_involucrados}
+  
+  **Instrucciones:**
+  1. La descripción debe incluir:
+     - **Elementos visuales:** Colores, formas, luz, sombras.
+     - **Elementos sensoriales:** Olores, sonidos, texturas, temperatura.
+     - **Atmósfera:** El ambiente emocional del lugar.
+     - **Detalles específicos:** Objetos o características únicas.
+  2. Usa un lenguaje poético pero preciso.
+  3. El texto debe tener entre 50 y 150 palabras.
+  
+  **Ejemplo:**
+  "La playa al atardecer es un lienzo de colores cálidos: el naranja del sol se funde con el azul del mar, creando un horizonte dorado. El aire huele a salitre y algas, y el sonido de las olas rompiendo en la orilla llena el silencio. La arena, fría bajo los pies descalzos, está salpicada de conchas y piedras pulidas por el mar. Un viejo muelle de madera, carcomido por el tiempo, se extiende hacia el agua como un dedo acusador. Es un lugar de paz, pero también de melancolía, donde el pasado y el presente se encuentran."
+
+
+# Generación de duración estimada
+duracion_estimada: |
+  Eres un experto en ritmo narrativo para guiones de {estilo}.
+  Estima la duración de la siguiente escena y justifícalo:
+  
+  **Datos de la escena:**
+  - Título: {titulo}
+  - Texto de la escena: {texto_escena}
+  - Personajes involucrados: {personajes_involucrados}
+  - Elementos narrativos: {elementos_narrativos}
+  
+  **Instrucciones:**
+  1. Estima la duración en minutos (ej: "3 minutos", "5-7 minutos").
+  2. Justifica la estimación basándote en:
+     - Complejidad de la escena (número de personajes, acciones, diálogos).
+     - Ritmo (escenas de acción vs. diálogos íntimos).
+     - Importancia narrativa (clímax vs. transición).
+  3. Devuelve un string con el formato: "{duracion}: {justificacion}"
+  
+  **Ejemplo:**
+  "5-7 minutos: La escena incluye un diálogo emocional entre dos personajes con varias revelaciones importantes, además de descripciones ambientales detalladas que requieren tiempo para ser absorbidas por el espectador."
