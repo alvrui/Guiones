@@ -1,0 +1,153 @@
+# Prompts para generación de contenido de Narrativas
+
+# Generación de sinopsis de narrativa
+sinopsis: |
+  Eres un experto en desarrollo de narrativas para guiones de {estilo} con tono {tono_general}.
+  Genera una sinopsis clara y atractiva para la siguiente narrativa:
+  
+  **Datos de la narrativa:**
+  - Título: {titulo}
+  - Tipo de estructura: {tipo_estructura}
+  - Personajes involucrados: {personajes_involucrados}
+  - Temas asociados: {temas_asociados}
+  
+  **Instrucciones:**
+  1. La sinopsis debe:
+     - Resumir la narrativa en 2-3 párrafos.
+     - Incluir el conflicto principal y los personajes clave.
+     - Describir el arco narrativo (inicio, desarrollo, posible final).
+     - Ser coherente con el tipo de estructura ({tipo_estructura}).
+  2. Usa un lenguaje acorde al tono general ({tono_general}).
+  3. El texto debe tener entre 100 y 250 palabras.
+  
+  **Ejemplo:**
+  "'La Búsqueda de la Verdad' sigue a Juan Pérez y María López en su viaje para descubrir la verdad detrás de la muerte de la familia de Juan. A medida que avanzan, se enfrentan a una red de mentiras y traiciones que se extiende hasta los más altos niveles del poder. La narrativa, estructurada de manera circular, comienza y termina en el mismo pueblo, pero con los personajes transformados por sus experiencias. Los temas de justicia, perdón y redención están entrelazados en esta historia que explora el precio de la verdad."
+
+
+# Generación de título de narrativa
+titulo: |
+  Eres un experto en desarrollo de narrativas para guiones de {estilo}.
+  Genera 3 opciones de títulos creativos y descriptivos para una narrativa con las siguientes características:
+  
+  **Datos de la narrativa:**
+  - Tipo de estructura: {tipo_estructura}
+  - Personajes involucrados: {personajes_involucrados}
+  - Temas asociados: {temas_asociados}
+  - Contexto: {contexto}
+  
+  **Instrucciones:**
+  1. Los títulos deben ser:
+     - Claros y evocadores.
+     - Coherentes con el tipo de estructura y los temas.
+     - Atractivos para el público objetivo.
+  2. Usa un lenguaje poético o impactante según el tono.
+  3. Devuelve solo una lista de strings.
+  
+  **Ejemplo:**
+  [
+    "El Camino de las Sombras",
+    "Justicia y Redención",
+    "El Precio de la Verdad"
+  ]
+
+
+# Generación de temas asociados
+temas_asociados: |
+  Eres un experto en análisis temático para guiones de {estilo}.
+  Genera una lista de 3-5 temas principales que explora la siguiente narrativa:
+  
+  **Datos de la narrativa:**
+  - Título: {titulo}
+  - Sinopsis: {sinopsis}
+  - Personajes involucrados: {personajes_involucrados}
+  - Tipo de estructura: {tipo_estructura}
+  
+  **Instrucciones:**
+  1. Los temas deben ser:
+     - Universales (ej: amor, traición, redención).
+     - Específicos para la narrativa.
+     - Coherentes con el estilo y el tono.
+  2. Usa términos precisos y evocadores.
+  3. Devuelve solo una lista de strings.
+  
+  **Ejemplo:**
+  ["Justicia", "Pérdida", "Redención", "Traición", "Esperanza"]
+
+
+# Generación de conexiones con otras narrativas
+conexiones: |
+  Eres un experto en estructura narrativa para guiones.
+  Describe cómo la siguiente narrativa se relaciona con otras narrativas en el proyecto:
+  
+  **Datos de la narrativa:**
+  - Título: {titulo}
+  - Sinopsis: {sinopsis}
+  - Personajes involucrados: {personajes_involucrados}
+  - Temas asociados: {temas_asociados}
+  
+  **Datos del proyecto:**
+  - Otras narrativas: {otras_narrativas}
+  
+  **Instrucciones:**
+  1. Describe las conexiones en términos de:
+     - **Tempo:** ¿Es paralela, secuencial, o entrelazada?
+     - **Temas:** ¿Comparten temas o los contrastan?
+     - **Personajes:** ¿Los mismos personajes aparecen en otras narrativas?
+     - **Eventos:** ¿Los eventos de esta narrativa afectan a otras?
+  2. Sé específico y claro.
+  3. El texto debe tener entre 50 y 150 palabras.
+  
+  **Ejemplo:**
+  "Esta narrativa es paralela a 'La Conspiración del Coronel' y se desarrolla simultáneamente en el tiempo. Mientras Juan busca pruebas contra el Coronel, María descubre secretos sobre su propia familia que están conectados con los eventos de la conspiración. Ambas narrativas exploran el tema de la traición, pero desde perspectivas diferentes: la de Juan es más activa, mientras que la de María es más introspectiva. Los eventos de esta narrativa tienen un impacto directo en el clímax de la conspiración."
+
+
+# Generación de tipo de estructura
+tipo_estructura: |
+  Eres un experto en estructura narrativa para guiones.
+  Recomienda un tipo de estructura para la siguiente narrativa y justifícalo:
+  
+  **Datos de la narrativa:**
+  - Título: {titulo}
+  - Sinopsis: {sinopsis}
+  - Personajes involucrados: {personajes_involucrados}
+  - Temas asociados: {temas_asociados}
+  
+  **Instrucciones:**
+  1. Elige uno de estos tipos: Lineal, Episódica, Temática, Circular, Asociativa.
+  2. Justifica tu elección basándote en:
+     - La naturaleza de la historia.
+     - Cómo se desarrollan los eventos.
+     - La relación entre los personajes y los temas.
+  3. Devuelve un objeto JSON con los campos: tipo, justificacion.
+  
+  **Ejemplo:**
+  {
+    "tipo": "Circular",
+    "justificacion": "La narrativa comienza y termina en el mismo lugar (el pueblo natal de Juan), pero con el personaje transformado por sus experiencias. Esta estructura refuerza el tema de la redención y el cierre del círculo de violencia."
+  }
+
+
+# Generación de tono
+tono: |
+  Eres un experto en atmósfera narrativa para guiones de {estilo}.
+  Recomienda un tono emocional para la siguiente narrativa y justifícalo:
+  
+  **Datos de la narrativa:**
+  - Título: {titulo}
+  - Sinopsis: {sinopsis}
+  - Personajes involucrados: {personajes_involucrados}
+  - Temas asociados: {temas_asociados}
+  
+  **Instrucciones:**
+  1. Elige uno de estos tonos: Drama, Comedia, Terror, Aventura, Suspense, Melancólico, Esperanzador, Irónico.
+  2. Justifica tu elección basándote en:
+     - Los temas explorados.
+     - Las emociones que se quieren transmitir.
+     - El estilo general del proyecto.
+  3. Devuelve un objeto JSON con los campos: tono, justificacion.
+  
+  **Ejemplo:**
+  {
+    "tono": "Melancólico",
+    "justificacion": "La narrativa explora temas de pérdida y redención, con personajes que cargan con el peso de sus pasados. Un tono melancólico refuerza la atmósfera de reflexión y el costo emocional de la búsqueda de la verdad."
+  }

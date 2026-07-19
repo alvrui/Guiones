@@ -1,0 +1,156 @@
+# Prompts para generación de contenido de Tramas
+
+# Generación de elementos narrativos
+elementos_narrativos: |
+  Eres un experto en estructura narrativa para guiones de {estilo} con tono {tono_general}.
+  Genera {num_elementos} elementos narrativos clave para la siguiente trama:
+  
+  **Datos de la trama:**
+  - Título: {titulo}
+  - Arquetipo narrativo: {arquetipo_narrativo}
+  - Personajes involucrados: {personajes_involucrados}
+  - Sinopsis: {sinopsis}
+  
+  **Instrucciones:**
+  1. Cada elemento debe ser de uno de estos tipos: Conflicto, Revelación, Clímax, Giro Argumental, Exposición, Desarrollo, Resolución.
+  2. Para cada elemento, proporciona:
+     - tipo: El tipo de elemento (uno de los mencionados).
+     - descripcion: Una descripción clara y específica (2-3 oraciones).
+  3. Los elementos deben estar conectados entre sí y avanzar la trama de manera coherente.
+  4. Incluye al menos un Conflicto y un Clímax o Giro Argumental.
+  5. Devuelve una lista de objetos JSON.
+  
+  **Ejemplo:**
+  [
+    {"tipo": "Conflicto", "descripcion": "Juan se enfrenta al Coronel Mendoza en un duelo a muerte en el puente del pueblo, donde el destino de su familia será decidido."},
+    {"tipo": "Revelación", "descripcion": "Durante el combate, Juan descubre que el Coronel es en realidad su tío, un secreto que cambia su perspectiva de la venganza."},
+    {"tipo": "Clímax", "descripcion": "En el momento decisivo, Juan elige perdonar al Coronel, demostrando que ha superado su sed de venganza."}
+  ]
+
+
+# Generación de obstáculos
+obstaculos: |
+  Eres un experto en desarrollo de tramas para guiones de {estilo}.
+  Genera una lista de 3-5 obstáculos que los personajes deben superar en la siguiente trama:
+  
+  **Datos de la trama:**
+  - Título: {titulo}
+  - Arquetipo narrativo: {arquetipo_narrativo}
+  - Personajes involucrados: {personajes_involucrados}
+  - Sinopsis: {sinopsis}
+  
+  **Instrucciones:**
+  1. Los obstáculos pueden ser físicos, emocionales, sociales o morales.
+  2. Deben ser relevantes para el arquetipo narrativo y los personajes involucrados.
+  3. Sé específico y creativo.
+  4. Devuelve solo una lista de strings.
+  
+  **Ejemplo:**
+  [
+    "Falta de pruebas para incriminar al Coronel",
+    "Traición de un aliado cercano",
+    "Una tormenta que impide el viaje al escondite del antagonista",
+    "El miedo de María a perder a Juan si este continúa su búsqueda de venganza"
+  ]
+
+
+# Generación de sinopsis de trama
+sinopsis: |
+  Eres un experto en desarrollo de tramas para guiones de {estilo} con tono {tono_general}.
+  Genera una sinopsis clara y atractiva para la siguiente trama:
+  
+  **Datos de la trama:**
+  - Título: {titulo}
+  - Arquetipo narrativo: {arquetipo_narrativo}
+  - Personajes involucrados: {personajes_involucrados}
+  - Temas principales: {temas_principales}
+  
+  **Instrucciones:**
+  1. La sinopsis debe resumir la trama en 2-3 oraciones.
+  2. Debe incluir:
+     - El conflicto principal.
+     - Los personajes clave involucrados.
+     - El arco narrativo (qué está en juego).
+  3. Usa un lenguaje acorde al tono general ({tono_general}).
+  4. El texto debe tener entre 50 y 150 palabras.
+  
+  **Ejemplo:**
+  "En 'La Conspiración del Coronel', Juan Pérez descubre que el hombre responsable de la muerte de su familia, el Coronel Mendoza, está planeando un golpe de estado. Con la ayuda de María, su esposa, y Carlos, su hermano perdido, Juan debe infiltrarse en la fortaleza del Coronel para obtener pruebas de sus crímenes. Sin embargo, el precio de la justicia podría ser más alto de lo que está dispuesto a pagar."
+
+
+# Generación de título de trama
+titulo: |
+  Eres un experto en desarrollo de tramas para guiones de {estilo}.
+  Genera 3 opciones de títulos creativos y descriptivos para una trama con las siguientes características:
+  
+  **Datos de la trama:**
+  - Arquetipo narrativo: {arquetipo_narrativo}
+  - Personajes involucrados: {personajes_involucrados}
+  - Temas principales: {temas_principales}
+  - Contexto: {contexto}
+  
+  **Instrucciones:**
+  1. Los títulos deben ser:
+     - Claros y descriptivos.
+     - Atractivos y memorables.
+     - Coherentes con el arquetipo narrativo y los temas.
+  2. Usa un lenguaje poético o impactante según el tono.
+  3. Devuelve solo una lista de strings.
+  
+  **Ejemplo:**
+  [
+    "La Sombra del Coronel",
+    "El Precio de la Venganza",
+    "Sangre y Redención"
+  ]
+
+
+# Generación de subtramas
+subtramas: |
+  Eres un experto en desarrollo de tramas para guiones de {estilo}.
+  Genera 2-3 ideas para subtramas que complementen la siguiente trama principal:
+  
+  **Datos de la trama principal:**
+  - Título: {titulo}
+  - Arquetipo narrativo: {arquetipo_narrativo}
+  - Personajes involucrados: {personajes_involucrados}
+  - Sinopsis: {sinopsis}
+  
+  **Instrucciones:**
+  1. Cada subtrama debe ser una idea breve (1-2 oraciones) que:
+     - Esté conectada con la trama principal.
+     - Desarrolle un aspecto secundario de la historia.
+     - Involucre a personajes secundarios o explore temas complementarios.
+  2. Las subtramas deben enriquecer el mundo y los personajes.
+  3. Devuelve una lista de objetos JSON con los campos: titulo, descripcion.
+  
+  **Ejemplo:**
+  [
+    {"titulo": "El Secreto de María", "descripcion": "María descubre que su padre fue cómplice del Coronel, lo que la obliga a elegir entre su lealtad a Juan y su familia."},
+    {"titulo": "La Redención de Carlos", "descripcion": "Carlos, el hermano de Juan, debe enfrentar sus propios demonios antes de poder ayudar a su hermano."},
+    {"titulo": "El Pueblo Dividido", "descripcion": "Los habitantes del pueblo se dividen entre apoyar a Juan o al Coronel, creando tensiones sociales."}
+  ]
+
+
+# Generación de notas para la trama
+notas: |
+  Eres un experto en desarrollo de tramas para guiones de {estilo}.
+  Genera notas de producción o inspiradoras para la siguiente trama:
+  
+  **Datos de la trama:**
+  - Título: {titulo}
+  - Arquetipo narrativo: {arquetipo_narrativo}
+  - Personajes involucrados: {personajes_involucrados}
+  - Sinopsis: {sinopsis}
+  
+  **Instrucciones:**
+  1. Las notas pueden incluir:
+     - Inspiraciones (ej: "Inspirada en hechos reales de la Guerra Civil Española").
+     - Referencias culturales o literarias.
+     - Ideas para el tono visual o emocional.
+     - Conexiones con otras tramas o personajes.
+  2. Sé breve pero informativo (1-3 oraciones).
+  3. El texto debe tener entre 20 y 100 palabras.
+  
+  **Ejemplo:**
+  "Esta trama está inspirada en el concepto de 'el viaje del héroe' de Joseph Campbell, con un giro hacia la redención. El enfrentamiento final entre Juan y el Coronel podría filmarse en un escenario abierto, con luz dorada al atardecer, simbolizando la posibilidad de un nuevo comienzo."
