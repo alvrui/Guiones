@@ -9,7 +9,14 @@ from typing import List
 from .. import schemas, crud
 from ..database import get_db
 
-router = APIRouter(prefix="/tramas", tags=["tramas"])
+router = APIRouter(tags=["tramas"])
+
+
+@router.get("/", response_model=List[schemas.Trama])
+def read_all_tramas(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    """Get all plots."""
+    tramas = crud.get_all_tramas(db, skip=skip, limit=limit)
+    return tramas
 
 
 @router.get("/proyecto/{proyecto_id}", response_model=List[schemas.Trama])

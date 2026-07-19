@@ -9,6 +9,7 @@ import { StructurePage } from "./pages/StructurePage";
 import { GraphPage } from "./pages/GraphPage";
 import { NotificationContainer } from "./components/Notification";
 import { useProject } from "./hooks/useProject";
+import type { Notification as NotificationType } from "./types";
 
 // Tab type
 type Tab = "proyecto" | "personajes" | "narrativas" | "tramas" | "estructura" | "grafo";
@@ -94,7 +95,7 @@ const Sidebar = () => {
 // Main content area
 const MainContent = () => {
   const { proyectoActual } = useProject();
-  const [notifications, setNotifications] = useState<{id: string; type: "success" | "error" | "info" | "warning"; message: string}[]>([]);
+  const [notifications, setNotifications] = useState<NotificationType[]>([]);
 
   // Add notification
   const addNotification = (type: "success" | "error" | "info" | "warning", message: string) => {

@@ -2,7 +2,7 @@
 Pydantic schemas for request/response validation.
 """
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 from typing import List, Optional, Dict, Any, Union
 from datetime import date
 from enum import Enum
@@ -295,11 +295,12 @@ class EstructuraNarrativaBase(BaseModel):
     notas_direccion: Optional[str] = Field(None, description="Notas de dirección")
     estado: Optional[Estado] = Field(None, description="Estado")
 
-    @validator('numero_acto', 'numero_escena')
-    def validate_numero(cls, v, values, field):
-        if values.get('tipo') == 'Acto' and field.name == 'numero_escena' and v is not None:
+    @field_validator('numero_acto', 'numero_escena')
+    @classmethod
+    def validate_numero(cls, v, info):
+        if info.field_name == 'numero_escena' and info.data.get('tipo') == 'Acto' and v is not None:
             raise ValueError('numero_escena debe ser None para Acto')
-        if values.get('tipo') == 'Escena' and field.name == 'numero_acto' and v is not None:
+        if info.field_name == 'numero_acto' and info.data.get('tipo') == 'Escena' and v is not None:
             raise ValueError('numero_acto debe ser None para Escena')
         return v
 

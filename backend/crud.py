@@ -77,6 +77,11 @@ def get_personajes(db: Session, proyecto_id: str, skip: int = 0, limit: int = 10
     ).offset(skip).limit(limit).all()
 
 
+def get_all_personajes(db: Session, skip: int = 0, limit: int = 100) -> List[models.Personaje]:
+    """Get all characters."""
+    return db.query(models.Personaje).offset(skip).limit(limit).all()
+
+
 def create_personaje(db: Session, personaje: schemas.PersonajeCreate, proyecto_id: str) -> models.Personaje:
     """Create a new character for a project."""
     db_personaje = models.Personaje(
@@ -184,6 +189,11 @@ def get_narrativas(db: Session, proyecto_id: str, skip: int = 0, limit: int = 10
     ).offset(skip).limit(limit).all()
 
 
+def get_all_narrativas(db: Session, skip: int = 0, limit: int = 100) -> List[models.Narrativa]:
+    """Get all narratives."""
+    return db.query(models.Narrativa).offset(skip).limit(limit).all()
+
+
 def create_narrativa(db: Session, narrativa: schemas.NarrativaCreate, proyecto_id: str) -> models.Narrativa:
     """Create a new narrative for a project."""
     db_narrativa = models.Narrativa(
@@ -243,6 +253,11 @@ def get_tramas(db: Session, proyecto_id: str, skip: int = 0, limit: int = 100) -
     return db.query(models.Trama).filter(
         models.Trama.proyecto_id == proyecto_id
     ).offset(skip).limit(limit).all()
+
+
+def get_all_tramas(db: Session, skip: int = 0, limit: int = 100) -> List[models.Trama]:
+    """Get all plots."""
+    return db.query(models.Trama).offset(skip).limit(limit).all()
 
 
 def create_trama(db: Session, trama: schemas.TramaCreate, proyecto_id: str) -> models.Trama:
@@ -335,6 +350,11 @@ def get_estructuras(db: Session, proyecto_id: str, skip: int = 0, limit: int = 1
     return db.query(models.EstructuraNarrativa).filter(
         models.EstructuraNarrativa.proyecto_id == proyecto_id
     ).offset(skip).limit(limit).all()
+
+
+def get_all_estructuras(db: Session, skip: int = 0, limit: int = 100) -> List[models.EstructuraNarrativa]:
+    """Get all narrative structure elements."""
+    return db.query(models.EstructuraNarrativa).offset(skip).limit(limit).all()
 
 
 def get_estructuras_by_acto(db: Session, proyecto_id: str, numero_acto: int) -> List[models.EstructuraNarrativa]:

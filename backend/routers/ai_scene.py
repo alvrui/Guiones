@@ -10,7 +10,7 @@ from .. import schemas, crud
 from ..database import get_db
 from ..agents import SceneAgent
 
-router = APIRouter(prefix="/ai/scene", tags=["IA - Escenas"])
+router = APIRouter(tags=["IA - Escenas"])
 
 # Initialize agent
 scene_agent = SceneAgent()

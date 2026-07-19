@@ -10,7 +10,7 @@ from .. import schemas, crud
 from ..database import get_db
 from ..agents import CharacterAgent
 
-router = APIRouter(prefix="/ai/character", tags=["IA - Personajes"])
+router = APIRouter(tags=["IA - Personajes"])
 
 # Initialize agent
 character_agent = CharacterAgent()

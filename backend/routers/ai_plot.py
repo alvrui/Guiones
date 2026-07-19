@@ -10,7 +10,7 @@ from .. import schemas, crud
 from ..database import get_db
 from ..agents import PlotAgent
 
-router = APIRouter(prefix="/ai/plot", tags=["IA - Tramas"])
+router = APIRouter(tags=["IA - Tramas"])
 
 # Initialize agent
 plot_agent = PlotAgent()

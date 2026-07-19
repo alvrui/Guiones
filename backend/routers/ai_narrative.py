@@ -10,7 +10,7 @@ from .. import schemas, crud
 from ..database import get_db
 from ..agents import NarrativeAgent
 
-router = APIRouter(prefix="/ai/narrative", tags=["IA - Narrativas"])
+router = APIRouter(tags=["IA - Narrativas"])
 
 # Initialize agent
 narrative_agent = NarrativeAgent()

@@ -1,9 +1,14 @@
 // Notification component for displaying toast messages
 import { useEffect, useState } from "react";
-import { Notification, NotificationType } from "../types";
+import { Notification as NotificationTypeInterface, NotificationType } from "../types";
 
 interface NotificationProps {
-  notification: Notification;
+  notification: NotificationTypeInterface;
+  onDismiss: (id: string) => void;
+}
+
+interface NotificationContainerProps {
+  notifications: NotificationTypeInterface[];
   onDismiss: (id: string) => void;
 }
 
@@ -21,8 +26,7 @@ const notificationIcons: Record<NotificationType, string> = {
   warning: "⚠️",
 };
 
-export const Notification = ({ notification, onDismiss }: NotificationProps) => {
-  const [isVisible, setIsVisible] = useState(true);
+export const NotificationComponent = ({ notification, onDismiss }: NotificationProps) => {
   const [isExiting, setIsExiting] = useState(false);
 
   // Auto-dismiss after duration
@@ -45,7 +49,7 @@ export const Notification = ({ notification, onDismiss }: NotificationProps) => 
     }, 300);
   };
 
-  if (!isVisible && !isExiting) return null;
+  if (isExiting) return null;
 
   return (
     <div
@@ -70,11 +74,6 @@ export const Notification = ({ notification, onDismiss }: NotificationProps) => 
 };
 
 // Notification container component
-interface NotificationContainerProps {
-  notifications: Notification[];
-  onDismiss: (id: string) => void;
-}
-
 export const NotificationContainer = ({
   notifications,
   onDismiss,
@@ -82,7 +81,7 @@ export const NotificationContainer = ({
   return (
     <>
       {notifications.map((notification) => (
-        <Notification
+        <NotificationComponent
           key={notification.id}
           notification={notification}
           onDismiss={onDismiss}
@@ -92,4 +91,5 @@ export const NotificationContainer = ({
   );
 };
 
-export default Notification;
+export const Notification = NotificationComponent;
+export default NotificationComponent;

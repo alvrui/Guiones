@@ -9,7 +9,7 @@ from typing import List
 from .. import schemas, crud
 from ..database import get_db
 
-router = APIRouter(prefix="/proyectos", tags=["proyectos"])
+router = APIRouter(tags=["proyectos"])
 
 
 @router.get("/", response_model=List[schemas.Proyecto])
