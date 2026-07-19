@@ -25,11 +25,11 @@ def get_proyectos(db: Session, skip: int = 0, limit: int = 100) -> List[models.P
 
 def create_proyecto(db: Session, proyecto: schemas.ProyectoCreate) -> models.Proyecto:
     """Create a new project."""
-    db_proyecto = models.Proyecto(
-        **proyecto.model_dump(),
-        fecha_creacion=date.today(),
-        fecha_ultima_modificacion=date.today(),
-    )
+    proyecto_data = proyecto.model_dump()
+    proyecto_data["fecha_creacion"] = date.today()
+    proyecto_data["fecha_ultima_modificacion"] = date.today()
+    
+    db_proyecto = models.Proyecto(**proyecto_data)
     db.add(db_proyecto)
     db.commit()
     db.refresh(db_proyecto)
