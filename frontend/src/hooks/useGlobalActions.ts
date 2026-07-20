@@ -2,6 +2,7 @@
 import { useState, useCallback } from "react";
 import { proyectoAPI } from "../services/api";
 import { Proyecto } from "../types";
+import { useNotifications } from "../contexts/NotificationContext";
 
 interface UseGlobalActionsReturn {
   loading: boolean;
@@ -15,6 +16,7 @@ interface UseGlobalActionsReturn {
 export const useGlobalActions = (): UseGlobalActionsReturn => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const { addNotification } = useNotifications();
 
   // Clear error
   const clearError = useCallback(() => {
@@ -25,11 +27,12 @@ export const useGlobalActions = (): UseGlobalActionsReturn => {
   const exportProject = useCallback(async (proyectoId: string): Promise<Blob | null> => {
     if (!proyectoId) {
       setError("No hay proyecto seleccionado");
+      addNotification("error", "No hay proyecto seleccionado");
       return null;
     }
 
     setLoading(true);
-    setError(null);
+    clearError();
 
     try {
       const data = await proyectoAPI.exportToJSON(proyectoId);
@@ -40,17 +43,19 @@ export const useGlobalActions = (): UseGlobalActionsReturn => {
       
       return blob;
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error al exportar el proyecto");
+      const errorMessage = err instanceof Error ? err.message : "Error al exportar el proyecto";
+      setError(errorMessage);
+      addNotification("error", errorMessage);
       return null;
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [addNotification, clearError]);
 
   // Import project from JSON file
   const importProject = useCallback(async (file: File): Promise<Proyecto | null> => {
     setLoading(true);
-    setError(null);
+    clearError();
 
     try {
       // Read the file content
@@ -62,28 +67,32 @@ export const useGlobalActions = (): UseGlobalActionsReturn => {
       
       return proyecto;
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error al importar el proyecto");
+      const errorMessage = err instanceof Error ? err.message : "Error al importar el proyecto";
+      setError(errorMessage);
+      addNotification("error", errorMessage);
       return null;
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [addNotification, clearError]);
 
   // Save all changes (placeholder - will be implemented with auto-save)
   const saveAll = useCallback(async () => {
     setLoading(true);
-    setError(null);
+    clearError();
 
     try {
       // For now, just show a notification
       // In the future, this will trigger auto-save for all unsaved changes
-      return;
+      addNotification("success", "Todos los cambios guardados correctamente");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error al guardar");
+      const errorMessage = err instanceof Error ? err.message : "Error al guardar";
+      setError(errorMessage);
+      addNotification("error", errorMessage);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [addNotification, clearError]);
 
   return {
     loading,
