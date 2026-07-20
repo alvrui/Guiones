@@ -1,5 +1,5 @@
 // Main App component with routing and layout
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { ProjectPage } from "./pages/ProjectPage";
 import { CharactersPage } from "./pages/CharactersPage";
@@ -8,14 +8,35 @@ import { PlotsPage } from "./pages/PlotsPage";
 import { StructurePage } from "./pages/StructurePage";
 import { GraphPage } from "./pages/GraphPage";
 import { NotificationContainer } from "./components/Notification";
+import { NotificationProvider, useNotifications } from "./contexts/NotificationContext";
 import { useProject } from "./hooks/useProject";
-import type { Notification as NotificationType } from "./types";
-
-// Tab type
-type Tab = "proyecto" | "personajes" | "narrativas" | "tramas" | "estructura" | "grafo";
+import { useGlobalActions } from "./hooks/useGlobalActions";
+import { Proyecto } from "./types";
 
 // Sidebar component
-const Sidebar = () => {
+const Sidebar = ({
+  proyectoActual,
+  onExport,
+  onImport,
+  onSaveAll,
+  isSaving,
+}: {
+  proyectoActual: Proyecto | null;
+  onExport: () => void;
+  onImport: () => void;
+  onSaveAll: () => void;
+  isSaving: boolean;
+}) => {
+  // File input ref for import
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Handle import button click
+  const handleImportClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
   return (
     <div className="w-64 bg-gray-100 p-4 h-full">
       <div className="mb-6">
@@ -23,6 +44,18 @@ const Sidebar = () => {
         <p className="text-sm text-gray-500">Creador de guiones con IA</p>
       </div>
       
+      {/* Current project indicator */}
+      {proyectoActual && (
+        <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+          <p className="text-sm font-medium text-blue-700">
+            Proyecto actual:
+          </p>
+          <p className="text-sm text-blue-800 truncate">
+            {proyectoActual.titulo}
+          </p>
+        </div>
+      )}
+
       <nav className="space-y-2">
         <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
           Navegación
@@ -52,7 +85,7 @@ const Sidebar = () => {
           href="/tramas"
           className="flex items-center gap-2 p-2 text-gray-700 hover:bg-gray-200 rounded transition-colors"
         >
-          <span>🎭</span>
+          <span>🏭</span>
           <span>Tramas</span>
         </a>
         <a
@@ -75,15 +108,45 @@ const Sidebar = () => {
         <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
           Acciones
         </div>
-        <button className="w-full flex items-center gap-2 p-2 text-gray-700 hover:bg-gray-200 rounded transition-colors">
-          <span>💾</span>
-          <span>Guardar Todo</span>
+        <button
+          onClick={onSaveAll}
+          disabled={isSaving}
+          className={`w-full flex items-center justify-center gap-2 p-2 text-white rounded transition-colors ${isSaving ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}`}
+        >
+          {isSaving ? (
+            <>
+              <span className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></span>
+              <span>Guardando...</span>
+            </>
+          ) : (
+            <>
+              <span>💾</span>
+              <span>Guardar Todo</span>
+            </>
+          )}
         </button>
-        <button className="w-full flex items-center gap-2 p-2 text-gray-700 hover:bg-gray-200 rounded transition-colors">
+        
+        {/* Hidden file input for import */}
+        <input
+          type="file"
+          ref={fileInputRef}
+          accept=".json"
+          onChange={onImport}
+          className="hidden"
+        />
+        
+        <button
+          onClick={handleImportClick}
+          className="w-full flex items-center gap-2 p-2 text-gray-700 hover:bg-gray-200 rounded transition-colors"
+        >
           <span>📥</span>
           <span>Importar</span>
         </button>
-        <button className="w-full flex items-center gap-2 p-2 text-gray-700 hover:bg-gray-200 rounded transition-colors">
+        
+        <button
+          onClick={onExport}
+          className="w-full flex items-center gap-2 p-2 text-gray-700 hover:bg-gray-200 rounded transition-colors"
+        >
           <span>📤</span>
           <span>Exportar</span>
         </button>
@@ -95,18 +158,7 @@ const Sidebar = () => {
 // Main content area
 const MainContent = () => {
   const { proyectoActual } = useProject();
-  const [notifications, setNotifications] = useState<NotificationType[]>([]);
-
-  // Add notification
-  const addNotification = (type: "success" | "error" | "info" | "warning", message: string) => {
-    const id = Date.now().toString();
-    setNotifications((prev) => [...prev, { id, type, message }]);
-  };
-
-  // Dismiss notification
-  const dismissNotification = (id: string) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
-  };
+  const { addNotification } = useNotifications();
 
   // Check if we should show a warning about no project selected
   const showProjectWarning = !proyectoActual && (
@@ -139,9 +191,81 @@ const MainContent = () => {
 
       {/* Notifications */}
       <NotificationContainer
-        notifications={notifications}
-        onDismiss={dismissNotification}
+        notifications={[]}
+        onDismiss={() => {}}
       />
+    </div>
+  );
+};
+
+// Inner App component that uses the notification context
+const InnerApp = () => {
+  const { proyectoActual } = useProject();
+  const { addNotification } = useNotifications();
+  const { exportProject, importProject, saveAll, loading: actionsLoading, error } = useGlobalActions();
+
+  // Show error notifications
+  useCallback(() => {
+    if (error) {
+      addNotification("error", error);
+    }
+  }, [error, addNotification]);
+
+  // Handle export
+  const handleExport = useCallback(async () => {
+    if (!proyectoActual) {
+      addNotification("warning", "Selecciona un proyecto primero");
+      return;
+    }
+
+    const blob = await exportProject(proyectoActual.id);
+    if (blob) {
+      // Create download link
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${proyectoActual.titulo.replace(/\s+/g, "_")}_guion.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      addNotification("success", `Proyecto "${proyectoActual.titulo}" exportado correctamente`);
+    }
+  }, [proyectoActual, exportProject, addNotification]);
+
+  // Handle import
+  const handleImport = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const proyecto = await importProject(file);
+    if (proyecto) {
+      addNotification("success", `Proyecto "${proyecto.titulo}" importado correctamente`);
+      // Reload the page to see the new project
+      setTimeout(() => window.location.reload(), 1500);
+    }
+    
+    // Reset file input
+    event.target.value = "";
+  }, [importProject, addNotification]);
+
+  // Handle save all
+  const handleSaveAll = useCallback(async () => {
+    await saveAll();
+    addNotification("success", "Todos los cambios guardados correctamente");
+  }, [saveAll, addNotification]);
+
+  return (
+    <div className="flex h-screen bg-gray-50">
+      <Sidebar
+        proyectoActual={proyectoActual}
+        onExport={handleExport}
+        onImport={handleImport}
+        onSaveAll={handleSaveAll}
+        isSaving={actionsLoading}
+      />
+      <MainContent />
     </div>
   );
 };
@@ -150,10 +274,9 @@ const MainContent = () => {
 const App = () => {
   return (
     <Router>
-      <div className="flex h-screen bg-gray-50">
-        <Sidebar />
-        <MainContent />
-      </div>
+      <NotificationProvider>
+        <InnerApp />
+      </NotificationProvider>
     </Router>
   );
 };
