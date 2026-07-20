@@ -8,12 +8,9 @@ import { PlotsPage } from "./pages/PlotsPage";
 import { StructurePage } from "./pages/StructurePage";
 import { GraphPage } from "./pages/GraphPage";
 import { NotificationContainer } from "./components/Notification";
+import { NotificationProvider, useNotifications } from "./contexts/NotificationContext";
 import { useProject } from "./hooks/useProject";
 import { useGlobalActions } from "./hooks/useGlobalActions";
-import type { Notification as NotificationType } from "./types";
-
-// Tab type
-type Tab = "proyecto" | "personajes" | "narrativas" | "tramas" | "estructura" | "grafo";
 
 // Sidebar component
 const Sidebar = ({
@@ -146,18 +143,7 @@ const Sidebar = ({
 // Main content area
 const MainContent = () => {
   const { proyectoActual } = useProject();
-  const [notifications, setNotifications] = useState<NotificationType[]>([]);
-
-  // Add notification
-  const addNotification = useCallback((type: "success" | "error" | "info" | "warning", message: string) => {
-    const id = Date.now().toString();
-    setNotifications((prev) => [...prev, { id, type, message }]);
-  }, []);
-
-  // Dismiss notification
-  const dismissNotification = useCallback((id: string) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
-  }, []);
+  const { addNotification } = useNotifications();
 
   // Check if we should show a warning about no project selected
   const showProjectWarning = !proyectoActual && (
@@ -190,22 +176,30 @@ const MainContent = () => {
 
       {/* Notifications */}
       <NotificationContainer
-        notifications={notifications}
-        onDismiss={dismissNotification}
+        notifications={[]}
+        onDismiss={() => {}}
       />
     </div>
   );
 };
 
-// Main App component
-const App = () => {
+// Inner App component that uses the notification context
+const InnerApp = () => {
   const { proyectoActual } = useProject();
+  const { addNotification } = useNotifications();
   const { exportProject, importProject, saveAll, loading: actionsLoading, error } = useGlobalActions();
-  
+
+  // Show error notifications
+  useCallback(() => {
+    if (error) {
+      addNotification("error", error);
+    }
+  }, [error, addNotification]);
+
   // Handle export
   const handleExport = useCallback(async () => {
     if (!proyectoActual) {
-      alert("Selecciona un proyecto primero");
+      addNotification("warning", "Selecciona un proyecto primero");
       return;
     }
 
@@ -220,8 +214,10 @@ const App = () => {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
+      
+      addNotification("success", `Proyecto "${proyectoActual.titulo}" exportado correctamente`);
     }
-  }, [proyectoActual, exportProject]);
+  }, [proyectoActual, exportProject, addNotification]);
 
   // Handle import
   const handleImport = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -230,32 +226,41 @@ const App = () => {
 
     const proyecto = await importProject(file);
     if (proyecto) {
+      addNotification("success", `Proyecto "${proyecto.titulo}" importado correctamente`);
       // Reload the page to see the new project
-      window.location.reload();
+      setTimeout(() => window.location.reload(), 1500);
     }
     
     // Reset file input
     event.target.value = "";
-  }, [importProject]);
+  }, [importProject, addNotification]);
 
   // Handle save all
   const handleSaveAll = useCallback(async () => {
     await saveAll();
-    // Show notification
-    // Note: In a real implementation, this would trigger auto-save for all unsaved changes
-  }, [saveAll]);
+    addNotification("success", "Todos los cambios guardados correctamente");
+  }, [saveAll, addNotification]);
 
   return (
+    <div className="flex h-screen bg-gray-50">
+      <Sidebar
+        onExport={handleExport}
+        onImport={handleImport}
+        onSaveAll={handleSaveAll}
+        isSaving={actionsLoading}
+      />
+      <MainContent />
+    </div>
+  );
+};
+
+// Main App component
+const App = () => {
+  return (
     <Router>
-      <div className="flex h-screen bg-gray-50">
-        <Sidebar
-          onExport={handleExport}
-          onImport={handleImport}
-          onSaveAll={handleSaveAll}
-          isSaving={actionsLoading}
-        />
-        <MainContent />
-      </div>
+      <NotificationProvider>
+        <InnerApp />
+      </NotificationProvider>
     </Router>
   );
 };

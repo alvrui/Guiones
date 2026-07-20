@@ -1,6 +1,7 @@
 // Notification component for displaying toast messages
 import { useEffect, useState } from "react";
 import { Notification as NotificationTypeInterface, NotificationType } from "../types";
+import { useNotifications } from "../contexts/NotificationContext";
 
 interface NotificationProps {
   notification: NotificationTypeInterface;
@@ -8,8 +9,9 @@ interface NotificationProps {
 }
 
 interface NotificationContainerProps {
-  notifications: NotificationTypeInterface[];
-  onDismiss: (id: string) => void;
+  // Using context now, so these props are optional
+  notifications?: NotificationTypeInterface[];
+  onDismiss?: (id: string) => void;
 }
 
 const notificationColors: Record<NotificationType, string> = {
@@ -20,13 +22,13 @@ const notificationColors: Record<NotificationType, string> = {
 };
 
 const notificationIcons: Record<NotificationType, string> = {
-  success: "✅",
-  error: "❌",
-  info: "ℹ️",
-  warning: "⚠️",
+  success: "\u2705",
+  error: "\u274c",
+  info: "\u2139\ufe0f",
+  warning: "\u26a0\ufe0f",
 };
 
-export const NotificationComponent = ({ notification, onDismiss }: NotificationProps) => {
+const NotificationComponent = ({ notification, onDismiss }: NotificationProps) => {
   const [isExiting, setIsExiting] = useState(false);
 
   // Auto-dismiss after duration
@@ -53,10 +55,10 @@ export const NotificationComponent = ({ notification, onDismiss }: NotificationP
 
   return (
     <div
-      className={`fixed bottom-4 right-4 p-4 rounded-lg text-white shadow-lg transform transition-all duration-300 ${
+      className={`fixed p-4 rounded-lg text-white shadow-lg transform transition-all duration-300 ${
         notificationColors[notification.type]
       } ${isExiting ? "translate-x-full opacity-0" : "translate-x-0 opacity-100"}`}
-      style={{ zIndex: 1000 }}
+      style={{ zIndex: 1000, right: 24, bottom: 24 + (notification.id ? parseInt(notification.id) % 10 : 0) * 80 }}
     >
       <div className="flex items-center gap-3">
         <span className="text-xl">{notificationIcons[notification.type]}</span>
@@ -66,25 +68,31 @@ export const NotificationComponent = ({ notification, onDismiss }: NotificationP
           className="ml-auto text-white hover:text-gray-200"
           aria-label="Cerrar"
         >
-          ×
+          \u00d7
         </button>
       </div>
     </div>
   );
 };
 
-// Notification container component
+// Notification container component that uses context
 export const NotificationContainer = ({
-  notifications,
-  onDismiss,
+  notifications: _notifications,
+  onDismiss: _onDismiss,
 }: NotificationContainerProps) => {
+  const { notifications, dismissNotification } = useNotifications();
+  
+  // Use context notifications if available, otherwise fall back to props
+  const displayNotifications = notifications || _notifications || [];
+  const handleDismiss = onDismiss || dismissNotification;
+
   return (
     <>
-      {notifications.map((notification) => (
+      {displayNotifications.map((notification) => (
         <NotificationComponent
           key={notification.id}
           notification={notification}
-          onDismiss={onDismiss}
+          onDismiss={handleDismiss}
         />
       ))}
     </>
