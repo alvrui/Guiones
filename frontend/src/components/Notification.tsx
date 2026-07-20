@@ -83,8 +83,8 @@ export const NotificationContainer = ({
   const { notifications, dismissNotification } = useNotifications();
   
   // Use context notifications if available, otherwise fall back to props
-  const displayNotifications = notifications || _notifications || [];
-  const handleDismiss = onDismiss || dismissNotification;
+  const displayNotifications = _notifications || notifications || [];
+  const handleDismiss = _onDismiss || dismissNotification;
 
   return (
     <>
