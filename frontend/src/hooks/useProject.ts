@@ -3,6 +3,8 @@ import { useState, useEffect, useCallback } from "react";
 import { proyectoAPI } from "../services/api";
 import { Proyecto, ProyectoCreate, ProyectoUpdate } from "../types";
 
+const PROYECTO_ACTUAL_KEY = "guiones_proyecto_actual";
+
 interface UseProjectReturn {
   proyectos: Proyecto[];
   proyectoActual: Proyecto | null;
@@ -18,9 +20,28 @@ interface UseProjectReturn {
 
 export const useProject = (): UseProjectReturn => {
   const [proyectos, setProyectos] = useState<Proyecto[]>([]);
-  const [proyectoActual, setProyectoActual] = useState<Proyecto | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Load saved project from localStorage
+  const [proyectoActual, setProyectoActualState] = useState<Proyecto | null>(() => {
+    try {
+      const saved = localStorage.getItem(PROYECTO_ACTUAL_KEY);
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  // Persist project selection to localStorage
+  const setProyectoActual = useCallback((proyecto: Proyecto | null) => {
+    setProyectoActualState(proyecto);
+    if (proyecto) {
+      localStorage.setItem(PROYECTO_ACTUAL_KEY, JSON.stringify(proyecto));
+    } else {
+      localStorage.removeItem(PROYECTO_ACTUAL_KEY);
+    }
+  }, []);
 
   // Fetch all projects
   const fetchProyectos = useCallback(async () => {
@@ -29,12 +50,17 @@ export const useProject = (): UseProjectReturn => {
     try {
       const data = await proyectoAPI.getAll();
       setProyectos(data);
+      
+      // If we have a saved project but it's not in the list, clear it
+      if (proyectoActual && !data.some(p => p.id === proyectoActual.id)) {
+        setProyectoActual(null);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error al cargar proyectos");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [proyectoActual]);
 
   // Fetch a single project by ID
   const fetchProyecto = useCallback(async (id: string) => {
@@ -48,7 +74,7 @@ export const useProject = (): UseProjectReturn => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [setProyectoActual]);
 
   // Create a new project
   const createProyecto = useCallback(async (data: ProyectoCreate) => {
@@ -65,7 +91,7 @@ export const useProject = (): UseProjectReturn => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [setProyectoActual]);
 
   // Update a project
   const updateProyecto = useCallback(async (id: string, data: ProyectoUpdate) => {
@@ -86,7 +112,7 @@ export const useProject = (): UseProjectReturn => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [proyectoActual, setProyectoActual]);
 
   // Delete a project
   const deleteProyecto = useCallback(async (id: string) => {
@@ -105,7 +131,7 @@ export const useProject = (): UseProjectReturn => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [proyectoActual, setProyectoActual]);
 
   // Load projects on mount
   useEffect(() => {

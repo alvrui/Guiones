@@ -11,14 +11,17 @@ import { NotificationContainer } from "./components/Notification";
 import { NotificationProvider, useNotifications } from "./contexts/NotificationContext";
 import { useProject } from "./hooks/useProject";
 import { useGlobalActions } from "./hooks/useGlobalActions";
+import { Proyecto } from "./types";
 
 // Sidebar component
 const Sidebar = ({
+  proyectoActual,
   onExport,
   onImport,
   onSaveAll,
   isSaving,
 }: {
+  proyectoActual: Proyecto | null;
   onExport: () => void;
   onImport: () => void;
   onSaveAll: () => void;
@@ -41,9 +44,21 @@ const Sidebar = ({
         <p className="text-sm text-gray-500">Creador de guiones con IA</p>
       </div>
       
+      {/* Current project indicator */}
+      {proyectoActual && (
+        <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+          <p className="text-sm font-medium text-blue-700">
+            Proyecto actual:
+          </p>
+          <p className="text-sm text-blue-800 truncate">
+            {proyectoActual.titulo}
+          </p>
+        </div>
+      )}
+
       <nav className="space-y-2">
         <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-          Navegaci\u00f3n
+          Navegación
         </div>
         <a
           href="/"
@@ -158,7 +173,7 @@ const MainContent = () => {
         <div className="mb-4 p-4 bg-yellow-50 text-yellow-700 rounded-lg border border-yellow-200">
           <p className="font-medium">⚠️ Selecciona un proyecto primero</p>
           <p className="text-sm mt-1">
-            Ve a la pesta\u00f1a "Proyectos" y selecciona o crea un proyecto para poder trabajar con {window.location.pathname.substring(1)}.
+            Ve a la pestaña "Proyectos" y selecciona o crea un proyecto para poder trabajar con {window.location.pathname.substring(1)}.
           </p>
         </div>
       )}
@@ -244,6 +259,7 @@ const InnerApp = () => {
   return (
     <div className="flex h-screen bg-gray-50">
       <Sidebar
+        proyectoActual={proyectoActual}
         onExport={handleExport}
         onImport={handleImport}
         onSaveAll={handleSaveAll}
