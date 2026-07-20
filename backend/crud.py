@@ -25,11 +25,22 @@ def get_proyectos(db: Session, skip: int = 0, limit: int = 100) -> List[models.P
 
 def create_proyecto(db: Session, proyecto: schemas.ProyectoCreate) -> models.Proyecto:
     """Create a new project."""
+    # Convert Pydantic model to dict, handling enums
     proyecto_data = proyecto.model_dump()
-    proyecto_data["fecha_creacion"] = date.today()
-    proyecto_data["fecha_ultima_modificacion"] = date.today()
     
-    db_proyecto = models.Proyecto(**proyecto_data)
+    # Ensure enum fields are strings (Pydantic v2 returns enum objects)
+    if isinstance(proyecto_data.get("tipo_narracion"), schemas.TipoNarracion):
+        proyecto_data["tipo_narracion"] = proyecto_data["tipo_narracion"].value
+    if isinstance(proyecto_data.get("estilo"), schemas.Estilo):
+        proyecto_data["estilo"] = proyecto_data["estilo"].value
+    if isinstance(proyecto_data.get("tono_general"), schemas.TonoGeneral):
+        proyecto_data["tono_general"] = proyecto_data["tono_general"].value
+    
+    db_proyecto = models.Proyecto(
+        **proyecto_data,
+        fecha_creacion=date.today(),
+        fecha_ultima_modificacion=date.today(),
+    )
     db.add(db_proyecto)
     db.commit()
     db.refresh(db_proyecto)
