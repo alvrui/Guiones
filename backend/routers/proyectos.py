@@ -4,7 +4,8 @@ Router for Proyecto endpoints.
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Dict, Any
+import json
 
 from .. import schemas, crud
 from ..database import get_db
@@ -52,7 +53,7 @@ def delete_proyecto(proyecto_id: str, db: Session = Depends(get_db)):
     return db_proyecto
 
 
-@router.get("/{proyecto_id}/completo", response_model=schemas.Message)
+@router.get("/{proyecto_id}/completo")
 def get_proyecto_completo(proyecto_id: str, db: Session = Depends(get_db)):
     """Get a complete project with all its related data."""
     completo = crud.get_proyecto_completo(db, proyecto_id=proyecto_id)
@@ -71,6 +72,7 @@ def get_proyecto_completo(proyecto_id: str, db: Session = Depends(get_db)):
         return [model_to_dict(m) for m in list_of_models]
     
     result = {
+        "version": "1.0",
         "proyecto": model_to_dict(completo["proyecto"]),
         "personajes": list_to_dict(completo["personajes"]),
         "narrativas": list_to_dict(completo["narrativas"]),
@@ -78,13 +80,22 @@ def get_proyecto_completo(proyecto_id: str, db: Session = Depends(get_db)):
         "estructura_narrativa": list_to_dict(completo["estructura_narrativa"]),
     }
     
-    return schemas.Message(message="Proyecto completo", detail=str(result))
+    return result
 
 
-@router.get("/{proyecto_id}/export", response_model=schemas.Message)
+@router.get("/{proyecto_id}/export")
 def export_proyecto(proyecto_id: str, db: Session = Depends(get_db)):
     """Export a project to JSON format."""
     json_data = crud.export_proyecto_to_json(db, proyecto_id=proyecto_id)
     if json_data is None:
         raise HTTPException(status_code=404, detail="Proyecto no encontrado")
-    return schemas.Message(message="Proyecto exportado", detail=str(json_data))
+    return json_data
+
+
+@router.post("/import", response_model=schemas.Proyecto, status_code=status.HTTP_201_CREATED)
+def import_proyecto(data: Dict[str, Any], db: Session = Depends(get_db)):
+    """Import a project from JSON format."""
+    proyecto = crud.import_proyecto_from_json(db, data=data)
+    if proyecto is None:
+        raise HTTPException(status_code=400, detail="Datos de importaci\u00f3n inv\u00e1lidos")
+    return proyecto
