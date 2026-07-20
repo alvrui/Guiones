@@ -22,10 +22,10 @@ const notificationColors: Record<NotificationType, string> = {
 };
 
 const notificationIcons: Record<NotificationType, string> = {
-  success: "\u2705",
-  error: "\u274c",
+  success: "✅",
+  error: "❌",
   info: "\u2139\ufe0f",
-  warning: "\u26a0\ufe0f",
+  warning: "⚠️",
 };
 
 const NotificationComponent = ({ notification, onDismiss }: NotificationProps) => {
@@ -68,7 +68,7 @@ const NotificationComponent = ({ notification, onDismiss }: NotificationProps) =
           className="ml-auto text-white hover:text-gray-200"
           aria-label="Cerrar"
         >
-          \u00d7
+          ×
         </button>
       </div>
     </div>

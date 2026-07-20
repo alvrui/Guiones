@@ -49,42 +49,42 @@ const Sidebar = ({
           href="/"
           className="flex items-center gap-2 p-2 text-gray-700 hover:bg-gray-200 rounded transition-colors"
         >
-          <span>\ud83d\udcc1</span>
+          <span>📁</span>
           <span>Proyectos</span>
         </a>
         <a
           href="/personajes"
           className="flex items-center gap-2 p-2 text-gray-700 hover:bg-gray-200 rounded transition-colors"
         >
-          <span>\ud83d\udc65</span>
+          <span>👥</span>
           <span>Personajes</span>
         </a>
         <a
           href="/narrativas"
           className="flex items-center gap-2 p-2 text-gray-700 hover:bg-gray-200 rounded transition-colors"
         >
-          <span>\ud83d\udcd6</span>
+          <span>📖</span>
           <span>Narrativas</span>
         </a>
         <a
           href="/tramas"
           className="flex items-center gap-2 p-2 text-gray-700 hover:bg-gray-200 rounded transition-colors"
         >
-          <span>\ud83c\udfad</span>
+          <span>🏭</span>
           <span>Tramas</span>
         </a>
         <a
           href="/estructura"
           className="flex items-center gap-2 p-2 text-gray-700 hover:bg-gray-200 rounded transition-colors"
         >
-          <span>\ud83d\udcdc</span>
+          <span>📜</span>
           <span>Estructura</span>
         </a>
         <a
           href="/grafo"
           className="flex items-center gap-2 p-2 text-gray-700 hover:bg-gray-200 rounded transition-colors"
         >
-          <span>\ud83d\udd17</span>
+          <span>🔗</span>
           <span>Grafo</span>
         </a>
       </nav>
@@ -105,7 +105,7 @@ const Sidebar = ({
             </>
           ) : (
             <>
-              <span>\ud83d\udcbe</span>
+              <span>💾</span>
               <span>Guardar Todo</span>
             </>
           )}
@@ -124,7 +124,7 @@ const Sidebar = ({
           onClick={handleImportClick}
           className="w-full flex items-center gap-2 p-2 text-gray-700 hover:bg-gray-200 rounded transition-colors"
         >
-          <span>\ud83d\udce5</span>
+          <span>📥</span>
           <span>Importar</span>
         </button>
         
@@ -132,7 +132,7 @@ const Sidebar = ({
           onClick={onExport}
           className="w-full flex items-center gap-2 p-2 text-gray-700 hover:bg-gray-200 rounded transition-colors"
         >
-          <span>\ud83d\udce4</span>
+          <span>📤</span>
           <span>Exportar</span>
         </button>
       </div>
@@ -156,7 +156,7 @@ const MainContent = () => {
       {/* Project warning */}
       {showProjectWarning && (
         <div className="mb-4 p-4 bg-yellow-50 text-yellow-700 rounded-lg border border-yellow-200">
-          <p className="font-medium">\u26a0\ufe0f Selecciona un proyecto primero</p>
+          <p className="font-medium">⚠️ Selecciona un proyecto primero</p>
           <p className="text-sm mt-1">
             Ve a la pesta\u00f1a "Proyectos" y selecciona o crea un proyecto para poder trabajar con {window.location.pathname.substring(1)}.
           </p>

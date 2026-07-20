@@ -313,7 +313,7 @@ export const PlotForm = ({
                   onClick={() => removeElemento(index)}
                   className="mt-2 text-red-500 text-sm hover:text-red-700"
                 >
-                  \u274c Eliminar elemento
+                  ❌ Eliminar elemento
                 </button>
               </div>
             ))}
