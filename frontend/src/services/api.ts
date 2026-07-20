@@ -148,6 +148,16 @@ export const proyectoAPI = {
     }
   },
   },
+
+  // Import project from JSON
+  importFromJSON: async (data: any): Promise<Proyecto> => {
+    try {
+      const response = await api.post<Proyecto>("/proyectos/import", data);
+      return response.data;
+    } catch (error) {
+      handleError(error as AxiosError);
+    }
+  },
 };
 
 // ==================== Personaje API ====================
