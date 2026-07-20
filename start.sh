@@ -77,7 +77,19 @@ start_backend() {
         echo -e "  Log: $LOG_BACKEND"
     else
         echo -e "${RED}[ERROR]${NC} No se pudo iniciar el backend. Ver log: $LOG_BACKEND"
-        tail -20 "$LOG_BACKEND"
+        echo ""
+        echo "=== Contenido completo de $LOG_BACKEND ==="
+        cat "$LOG_BACKEND"
+        echo ""
+        echo "=== Todos los logs en /tmp ==="
+        for logfile in /tmp/*.log; do
+            if [ -f "$logfile" ]; then
+                echo "--- $logfile ---"
+                cat "$logfile"
+                echo ""
+            fi
+        done
+        exit 1
     fi
 }
 
@@ -109,7 +121,19 @@ start_frontend() {
         echo -e "  Log: $LOG_FRONTEND"
     else
         echo -e "${RED}[ERROR]${NC} No se pudo iniciar el frontend. Ver log: $LOG_FRONTEND"
-        tail -20 "$LOG_FRONTEND"
+        echo ""
+        echo "=== Contenido completo de $LOG_FRONTEND ==="
+        cat "$LOG_FRONTEND"
+        echo ""
+        echo "=== Todos los logs en /tmp ==="
+        for logfile in /tmp/*.log; do
+            if [ -f "$logfile" ]; then
+                echo "--- $logfile ---"
+                cat "$logfile"
+                echo ""
+            fi
+        done
+        exit 1
     fi
 }
 
