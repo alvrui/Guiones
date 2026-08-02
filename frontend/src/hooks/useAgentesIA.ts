@@ -8,18 +8,13 @@ export const useAgentesIA = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch all agents on mount
-  useEffect(() => {
-    fetchAgentes();
-  }, []);
-
   // Fetch all agents
   const fetchAgentes = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await agenteIAAPI.get("/agentes-ia");
-      setAgentes(response.data || []);
+      const data = await agenteIAAPI.getAll();
+      setAgentes(data || []);
     } catch (err) {
       setError("Error al cargar los agentes IA");
       console.error("Error fetching agents:", err);
@@ -33,8 +28,8 @@ export const useAgentesIA = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await agenteIAAPI.get(`/agentes-ia/seccion/${seccion}`);
-      return response.data || [];
+      const data = await agenteIAAPI.getBySeccion(seccion);
+      return data || [];
     } catch (err) {
       setError("Error al cargar los agentes IA por sección");
       console.error("Error fetching agents by section:", err);
@@ -85,7 +80,7 @@ export const useAgentesIA = () => {
     setLoading(true);
     setError(null);
     try {
-      await agenteIAAPI.delete(`/agentes-ia/${id}`);
+      await agenteIAAPI.delete(id);
       setAgentes((prev) => prev.filter((a) => a.id !== id));
     } catch (err) {
       setError("Error al eliminar el agente IA");
