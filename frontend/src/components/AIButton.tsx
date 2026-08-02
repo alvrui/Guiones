@@ -68,7 +68,7 @@ export const AIButton = ({
     setIsLoading(true);
     setLocalError(null);
 
-    try:
+    try {
       const enhancedContext = getEnhancedContext();
       
       // Add user message to conversation
