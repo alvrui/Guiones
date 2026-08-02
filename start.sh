@@ -92,8 +92,8 @@ start_frontend() {
         exit 1
     fi
     
-    # Iniciar vite en puerto 3002
-    PORT=3002 nohup npm run dev > "$LOG_FRONTEND" 2>&1 &
+    # Iniciar vite en puerto 3002, accesible desde red local
+    PORT=3002 HOST=0.0.0.0 nohup npm run dev > "$LOG_FRONTEND" 2>&1 &
     FRONTEND_PID=$!
     
     # Guardar PID

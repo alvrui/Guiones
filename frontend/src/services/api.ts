@@ -20,8 +20,11 @@ import {
 } from "../types";
 
 // Create axios instance with base URL
+// Use absolute URL to backend for local network access
 const api: AxiosInstance = axios.create({
-  baseURL: "/api",
+  baseURL: window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    ? "/api"
+    : "http://" + window.location.hostname + ":8002/api",
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",

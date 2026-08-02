@@ -12,6 +12,7 @@ export default defineConfig({
   },
   server: {
     port: 3002,
+    host: '0.0.0.0',
     proxy: {
       // Proxy para llamadas al backend (FastAPI en puerto 8002)
       '/api': {
