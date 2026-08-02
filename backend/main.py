@@ -8,6 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 # Import routers
 from .routers import (
+    ai_unified,
+
     agentes_ia,
 
     documentos,
@@ -19,6 +21,8 @@ from .routers import (
     estructura,
 )
 from .routers import (
+    ai_unified,
+
     agentes_ia,
 
     documentos,
@@ -68,6 +72,8 @@ app.include_router(documentos.router, prefix="/api", tags=["documentos"])
 
 # AgenteIA routes
 app.include_router(agentes_ia.router, prefix="/api/agentes-ia", tags=["agentes_ia"])
+n# AI Unified routes
+app.include_router(ai_unified.router, prefix="/api/ai", tags=["IA"])
 
 # AI Character routes
 app.include_router(ai_character.router, prefix="/api/ai/character", tags=["IA - Personajes"])

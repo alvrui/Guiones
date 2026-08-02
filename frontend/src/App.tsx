@@ -9,7 +9,8 @@ import { StructurePage } from "./pages/StructurePage";
 import { GraphPage } from "./pages/GraphPage";
 import { AgentesPage, AgenteSelector } from "./pages/AgentesPage";
 import { NotificationContainer } from "./components/Notification";
-import { ProjectProvider, useProjectContext } from "./contexts/ProjectContext";
+import { ProjectProvider, useProjectContext }
+import { AgenteProvider } from "./contexts/ProjectContext";
 import { useProject } from "./hooks/useProject";
 import type { Notification as NotificationType } from "./types";
 
@@ -190,10 +191,12 @@ const App = () => {
   return (
     <Router>
       <ProjectProvider>
+        <AgenteProvider>
         <div className="flex h-screen bg-gray-50">
           <Sidebar />
           <MainContent />
         </div>
+      </AgenteProvider>
       </ProjectProvider>
     </Router>
   );

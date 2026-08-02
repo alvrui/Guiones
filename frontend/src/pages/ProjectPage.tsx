@@ -6,6 +6,7 @@ import { Proyecto, ProyectoCreate, ProyectoUpdate } from "../types";
 import { ProjectForm } from "../components/ProjectForm";
 import { DocumentLibrary } from "../components/DocumentLibrary";
 import { Modal } from "../components/Modal";
+import { SectionWithAgent } from "../components/SectionWithAgent";
 
 interface ProjectCardProps {
   proyecto: Proyecto;
@@ -155,203 +156,205 @@ export const ProjectPage = () => {
   };
 
   return (
-    <div className="p-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800">Proyectos</h1>
-            <p className="text-gray-600">
-              {proyectos.length} proyecto{proyectos.length !== 1 ? "s" : ""} creado
-              {proyectos.length !== 1 ? "s" : ""}
-            </p>
-          </div>
-          <button
-            onClick={handleNewProject}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-          >
-            + Nuevo Proyecto
-          </button>
-        </div>
-
-        {/* Error message */}
-        {error && (
-          <div className="p-4 bg-red-50 text-red-600 rounded-md mb-4">
-            {error}
-          </div>
-        )}
-
-        {/* Projects grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-          {loading ? (
-            <div className="col-span-full flex items-center justify-center p-8">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+    <SectionWithAgent seccion="proyectos">
+      <div className="p-4">
+        <div className="max-w-6xl mx-auto">
+          {/* Header */}
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800">Proyectos</h1>
+              <p className="text-gray-600">
+                {proyectos.length} proyecto{proyectos.length !== 1 ? "s" : ""} creado
+                {proyectos.length !== 1 ? "s" : ""}
+              </p>
             </div>
-          ) : proyectos.length === 0 ? (
-            <div className="col-span-full text-center p-8 text-gray-500">
-              <p>No hay proyectos creados aún.</p>
-              <p className="mt-2">Haz clic en "Nuevo Proyecto" para empezar.</p>
+            <button
+              onClick={handleNewProject}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            >
+              + Nuevo Proyecto
+            </button>
+          </div>
+
+          {/* Error message */}
+          {error && (
+            <div className="p-4 bg-red-50 text-red-600 rounded-md mb-4">
+              {error}
             </div>
-          ) : (
-            proyectos.map((proyecto) => (
-              <ProjectCard
-                key={proyecto.id}
-                proyecto={proyecto}
-                onEdit={handleEditProject}
-                onSelect={handleSelectProject}
-                onDelete={handleDeleteProject}
-                isSelected={proyectoActual?.id === proyecto.id}
-              />
-            ))
           )}
-        </div>
 
-        {/* Project details and documents */}
-        {proyectoActual && (
-          <div className="space-y-6">
-            {/* Project details */}
-            <div className="bg-white p-6 rounded-lg shadow border border-gray-200">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">
-                Detalles del Proyecto
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Título</p>
-                  <p className="text-lg font-medium">{proyectoActual.titulo}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Tipo de Narración</p>
-                  <p>{proyectoActual.tipo_narracion}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Estilo</p>
-                  <p>{proyectoActual.estilo}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Tono General</p>
-                  <p>{proyectoActual.tono_general}</p>
-                </div>
-                {proyectoActual.genero_principal && (
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Género Principal</p>
-                    <p>{proyectoActual.genero_principal}</p>
-                  </div>
-                )}
-                {proyectoActual.estructura_narrativa_base && (
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">
-                      Estructura Narrativa Base
-                    </p>
-                    <p>{proyectoActual.estructura_narrativa_base}</p>
-                  </div>
-                )}
-                <div className="md:col-span-2">
-                  <p className="text-sm text-gray-600 mb-1">Sinopsis</p>
-                  <p>{proyectoActual.sinopsis}</p>
-                </div>
-                {proyectoActual.contexto_historico && (
-                  <div className="md:col-span-2">
-                    <p className="text-sm text-gray-600 mb-1">Contexto Histórico</p>
-                    <p>{proyectoActual.contexto_historico}</p>
-                  </div>
-                )}
-                {proyectoActual.contexto_social && (
-                  <div className="md:col-span-2">
-                    <p className="text-sm text-gray-600 mb-1">Contexto Social</p>
-                    <p>{proyectoActual.contexto_social}</p>
-                  </div>
-                )}
-                {proyectoActual.contexto_geografico && (
-                  <div className="md:col-span-2">
-                    <p className="text-sm text-gray-600 mb-1">Contexto Geográfico</p>
-                    <p>{proyectoActual.contexto_geografico}</p>
-                  </div>
-                )}
-                {proyectoActual.contexto_ambiental && (
-                  <div className="md:col-span-2">
-                    <p className="text-sm text-gray-600 mb-1">Contexto Ambiental</p>
-                    <p>{proyectoActual.contexto_ambiental}</p>
-                  </div>
-                )}
-                {proyectoActual.inspiraciones_referencias && (
-                  <div className="md:col-span-2">
-                    <p className="text-sm text-gray-600 mb-1">
-                      Inspiraciones o Referencias
-                    </p>
-                    <p>{proyectoActual.inspiraciones_referencias}</p>
-                  </div>
-                )}
-                {proyectoActual.restricciones_limitaciones && (
-                  <div className="md:col-span-2">
-                    <p className="text-sm text-gray-600 mb-1">
-                      Restricciones o Limitaciones
-                    </p>
-                    <p>{proyectoActual.restricciones_limitaciones}</p>
-                  </div>
-                )}
-                {proyectoActual.temas_principales &&
-                  proyectoActual.temas_principales.length > 0 && (
-                    <div className="md:col-span-2">
-                      <p className="text-sm text-gray-600 mb-1">Temas Principales</p>
-                      <div className="flex flex-wrap gap-2">
-                        {proyectoActual.temas_principales.map((tema) => (
-                          <span
-                            key={tema}
-                            className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded"
-                          >
-                            {tema}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                {proyectoActual.palabras_clave &&
-                  proyectoActual.palabras_clave.length > 0 && (
-                    <div className="md:col-span-2">
-                      <p className="text-sm text-gray-600 mb-1">Palabras Clave</p>
-                      <div className="flex flex-wrap gap-2">
-                        {proyectoActual.palabras_clave.map((palabra) => (
-                          <span
-                            key={palabra}
-                            className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded"
-                          >
-                            {palabra}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+          {/* Projects grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            {loading ? (
+              <div className="col-span-full flex items-center justify-center p-8">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
               </div>
-            </div>
-
-            {/* Document Library */}
-            <DocumentLibrary
-              proyectoId={proyectoActual.id}
-              documentos={documentos}
-              onUpload={uploadDocumento}
-              onDelete={deleteDocumento}
-              isLoading={documentosLoading}
-            />
+            ) : proyectos.length === 0 ? (
+              <div className="col-span-full text-center p-8 text-gray-500">
+                <p>No hay proyectos creados aún.</p>
+                <p className="mt-2">Haz clic en "Nuevo Proyecto" para empezar.</p>
+              </div>
+            ) : (
+              proyectos.map((proyecto) => (
+                <ProjectCard
+                  key={proyecto.id}
+                  proyecto={proyecto}
+                  onEdit={handleEditProject}
+                  onSelect={handleSelectProject}
+                  onDelete={handleDeleteProject}
+                  isSelected={proyectoActual?.id === proyecto.id}
+                />
+              ))
+            )}
           </div>
-        )}
 
-        {/* Modal for project form */}
-        <Modal
-          isOpen={isModalOpen}
-          onClose={handleModalClose}
-          title={editingProyecto ? "Editar Proyecto" : "Nuevo Proyecto"}
-          size="lg"
-        >
-          <ProjectForm
-            proyecto={editingProyecto || null}
-            documentos={documentos}
-            onSubmit={handleSubmit}
-            onCancel={handleModalClose}
-            isLoading={loading}
-          />
-        </Modal>
+          {/* Project details and documents */}
+          {proyectoActual && (
+            <div className="space-y-6">
+              {/* Project details */}
+              <div className="bg-white p-6 rounded-lg shadow border border-gray-200">
+                <h2 className="text-xl font-bold text-gray-800 mb-4">
+                  Detalles del Proyecto
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Título</p>
+                    <p className="text-lg font-medium">{proyectoActual.titulo}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Tipo de Narración</p>
+                    <p>{proyectoActual.tipo_narracion}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Estilo</p>
+                    <p>{proyectoActual.estilo}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Tono General</p>
+                    <p>{proyectoActual.tono_general}</p>
+                  </div>
+                  {proyectoActual.genero_principal && (
+                    <div>
+                      <p className="text-sm text-gray-600 mb-1">Género Principal</p>
+                      <p>{proyectoActual.genero_principal}</p>
+                    </div>
+                  )}
+                  {proyectoActual.estructura_narrativa_base && (
+                    <div>
+                      <p className="text-sm text-gray-600 mb-1">
+                        Estructura Narrativa Base
+                      </p>
+                      <p>{proyectoActual.estructura_narrativa_base}</p>
+                    </div>
+                  )}
+                  <div className="md:col-span-2">
+                    <p className="text-sm text-gray-600 mb-1">Sinopsis</p>
+                    <p>{proyectoActual.sinopsis}</p>
+                  </div>
+                  {proyectoActual.contexto_historico && (
+                    <div className="md:col-span-2">
+                      <p className="text-sm text-gray-600 mb-1">Contexto Histórico</p>
+                      <p>{proyectoActual.contexto_historico}</p>
+                    </div>
+                  )}
+                  {proyectoActual.contexto_social && (
+                    <div className="md:col-span-2">
+                      <p className="text-sm text-gray-600 mb-1">Contexto Social</p>
+                      <p>{proyectoActual.contexto_social}</p>
+                    </div>
+                  )}
+                  {proyectoActual.contexto_geografico && (
+                    <div className="md:col-span-2">
+                      <p className="text-sm text-gray-600 mb-1">Contexto Geográfico</p>
+                      <p>{proyectoActual.contexto_geografico}</p>
+                    </div>
+                  )}
+                  {proyectoActual.contexto_ambiental && (
+                    <div className="md:col-span-2">
+                      <p className="text-sm text-gray-600 mb-1">Contexto Ambiental</p>
+                      <p>{proyectoActual.contexto_ambiental}</p>
+                    </div>
+                  )}
+                  {proyectoActual.inspiraciones_referencias && (
+                    <div className="md:col-span-2">
+                      <p className="text-sm text-gray-600 mb-1">
+                        Inspiraciones o Referencias
+                      </p>
+                      <p>{proyectoActual.inspiraciones_referencias}</p>
+                    </div>
+                  )}
+                  {proyectoActual.restricciones_limitaciones && (
+                    <div className="md:col-span-2">
+                      <p className="text-sm text-gray-600 mb-1">
+                        Restricciones o Limitaciones
+                      </p>
+                      <p>{proyectoActual.restricciones_limitaciones}</p>
+                    </div>
+                  )}
+                  {proyectoActual.temas_principales &&
+                    proyectoActual.temas_principales.length > 0 && (
+                      <div className="md:col-span-2">
+                        <p className="text-sm text-gray-600 mb-1">Temas Principales</p>
+                        <div className="flex flex-wrap gap-2">
+                          {proyectoActual.temas_principales.map((tema) => (
+                            <span
+                              key={tema}
+                              className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded"
+                            >
+                              {tema}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  {proyectoActual.palabras_clave &&
+                    proyectoActual.palabras_clave.length > 0 && (
+                      <div className="md:col-span-2">
+                        <p className="text-sm text-gray-600 mb-1">Palabras Clave</p>
+                        <div className="flex flex-wrap gap-2">
+                          {proyectoActual.palabras_clave.map((palabra) => (
+                            <span
+                              key={palabra}
+                              className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded"
+                            >
+                              {palabra}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                </div>
+              </div>
+
+              {/* Document Library */}
+              <DocumentLibrary
+                proyectoId={proyectoActual.id}
+                documentos={documentos}
+                onUpload={uploadDocumento}
+                onDelete={deleteDocumento}
+                isLoading={documentosLoading}
+              />
+            </div>
+          )}
+
+          {/* Modal for project form */}
+          <Modal
+            isOpen={isModalOpen}
+            onClose={handleModalClose}
+            title={editingProyecto ? "Editar Proyecto" : "Nuevo Proyecto"}
+            size="lg"
+          >
+            <ProjectForm
+              proyecto={editingProyecto || null}
+              documentos={documentos}
+              onSubmit={handleSubmit}
+              onCancel={handleModalClose}
+              isLoading={loading}
+            />
+          </Modal>
+        </div>
       </div>
-    </div>
+    </SectionWithAgent>
   );
 };
 
