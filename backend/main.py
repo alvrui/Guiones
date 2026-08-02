@@ -58,7 +58,8 @@ app.include_router(tramas.router, prefix="/api/tramas", tags=["tramas"])
 
 # Estructura Narrativa routes
 app.include_router(estructura.router, prefix="/api/estructura", tags=["estructura_narrativa"])
-n# Documento routes
+
+# Documento routes
 app.include_router(documentos.router, prefix="/api", tags=["documentos"])
 
 # AI Character routes

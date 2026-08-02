@@ -6,6 +6,7 @@ Defines the tables: proyectos, personajes, narrativas, tramas, estructura_narrat
 from sqlalchemy import Column, Integer, String, Text, ForeignKey, Date, JSON, Enum
 from .database import Base
 import uuid
+from datetime import datetime
 
 
 # Enums for SQLAlchemy (SQLite doesn't have native ENUM, so we use String with constraints)

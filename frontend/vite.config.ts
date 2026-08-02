@@ -11,11 +11,11 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3000,
+    port: 3002,
     proxy: {
-      // Proxy para llamadas al backend (FastAPI en puerto 8000)
+      // Proxy para llamadas al backend (FastAPI en puerto 8002)
       '/api': {
-        target: 'http://127.0.0.1:8000',
+        target: 'http://127.0.0.1:8002',
         changeOrigin: true,
       },
     },

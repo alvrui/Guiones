@@ -28,6 +28,9 @@ const api: AxiosInstance = axios.create({
   },
 });
 
+// Export axios instance for direct use
+export { api };
+
 // Error handling
 class APIError extends Error {
   constructor(message: string, public status: number, public data?: any) {

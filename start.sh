@@ -61,7 +61,7 @@ start_backend() {
     VENV_PYTHON="$BACKEND_DIR/venv/bin/python"
     
     # Ejecutar desde el directorio raíz de guiones (donde está backend/)
-    nohup bash -c "cd $BACKEND_DIR/.. && $VENV_PYTHON -m uvicorn backend.main:app --reload --host :: --port 8000" > "$LOG_BACKEND" 2>&1 &
+    nohup bash -c "cd $BACKEND_DIR/.. && $VENV_PYTHON -m uvicorn backend.main:app --reload --host :: --port 8002" > "$LOG_BACKEND" 2>&1 &
     BACKEND_PID=$!
     
     # Guardar PID
@@ -72,8 +72,8 @@ start_backend() {
     sleep 3
     
     # Verificar si el backend está funcionando
-    if curl -s http://localhost:8000/health > /dev/null 2>&1; then
-        echo -e "${GREEN}[OK]${NC} Backend iniciado en http://localhost:8000 (PID: $BACKEND_PID)"
+    if curl -s http://localhost:8002/health > /dev/null 2>&1; then
+        echo -e "${GREEN}[OK]${NC} Backend iniciado en http://localhost:8002 (PID: $BACKEND_PID)"
         echo -e "  Log: $LOG_BACKEND"
     else
         echo -e "${RED}[ERROR]${NC} No se pudo iniciar el backend. Ver log: $LOG_BACKEND"
@@ -92,8 +92,8 @@ start_frontend() {
         exit 1
     fi
     
-    # Iniciar vite
-    nohup npm run dev > "$LOG_FRONTEND" 2>&1 &
+    # Iniciar vite en puerto 3002
+    PORT=3002 nohup npm run dev > "$LOG_FRONTEND" 2>&1 &
     FRONTEND_PID=$!
     
     # Guardar PID
@@ -104,8 +104,8 @@ start_frontend() {
     sleep 3
     
     # Verificar si el frontend está funcionando
-    if curl -s http://localhost:3000 > /dev/null 2>&1; then
-        echo -e "${GREEN}[OK]${NC} Frontend iniciado en http://localhost:3000 (PID: $FRONTEND_PID)"
+    if curl -s http://localhost:3002 > /dev/null 2>&1; then
+        echo -e "${GREEN}[OK]${NC} Frontend iniciado en http://localhost:3002 (PID: $FRONTEND_PID)"
         echo -e "  Log: $LOG_FRONTEND"
     else
         echo -e "${RED}[ERROR]${NC} No se pudo iniciar el frontend. Ver log: $LOG_FRONTEND"
@@ -129,11 +129,11 @@ stop_services() {
     pkill -9 -f "npm run dev" 2>/dev/null || true
     
     # Matar por puerto usando lsof
-    if lsof -t -i :8000 2>/dev/null | grep -q .; then
-        lsof -t -i :8000 2>/dev/null | xargs kill -9 2>/dev/null || true
+    if lsof -t -i :8002 2>/dev/null | grep -q .; then
+        lsof -t -i :8002 2>/dev/null | xargs kill -9 2>/dev/null || true
     fi
-    if lsof -t -i :3000 2>/dev/null | grep -q .; then
-        lsof -t -i :3000 2>/dev/null | xargs kill -9 2>/dev/null || true
+    if lsof -t -i :3002 2>/dev/null | grep -q .; then
+        lsof -t -i :3002 2>/dev/null | xargs kill -9 2>/dev/null || true
     fi
     
     # Limpiar archivos PID
@@ -148,10 +148,10 @@ show_status() {
     echo "========================================"
     
     # Verificar backend - priorizar el puerto sobre el archivo PID
-    if lsof -i :8000 > /dev/null 2>&1; then
-        BACKEND_PID=$(lsof -t -i :8000 2>/dev/null | head -1)
+    if lsof -i :8002 > /dev/null 2>&1; then
+        BACKEND_PID=$(lsof -t -i :8002 2>/dev/null | head -1)
         echo -e "${GREEN}Backend:${NC}   EJECUTÁNDOSE (PID: $BACKEND_PID)"
-        echo "             URL: http://localhost:8000"
+        echo "             URL: http://localhost:8002"
         # Actualizar archivo PID
         echo "$BACKEND_PID" > "$PID_FILE.backend"
     else
@@ -161,10 +161,10 @@ show_status() {
     fi
     
     # Verificar frontend - priorizar el puerto sobre el archivo PID
-    if lsof -i :3000 > /dev/null 2>&1; then
-        FRONTEND_PID=$(lsof -t -i :3000 2>/dev/null | head -1)
+    if lsof -i :3002 > /dev/null 2>&1; then
+        FRONTEND_PID=$(lsof -t -i :3002 2>/dev/null | head -1)
         echo -e "${GREEN}Frontend:${NC}  EJECUTÁNDOSE (PID: $FRONTEND_PID)"
-        echo "             URL: http://localhost:3000"
+        echo "             URL: http://localhost:3002"
         # Actualizar archivo PID
         echo "$FRONTEND_PID" > "$PID_FILE.frontend"
     else
@@ -186,8 +186,8 @@ main() {
             start_frontend
             echo "========================================"
             echo -e "${GREEN}Aplicación Guiones iniciada!${NC}"
-            echo "Backend:  http://localhost:8000"
-            echo "Frontend: http://localhost:3000"
+            echo "Backend:  http://localhost:8002"
+            echo "Frontend: http://localhost:3002"
             echo ""
             echo "Presione Ctrl+C para detener"
             ;;
