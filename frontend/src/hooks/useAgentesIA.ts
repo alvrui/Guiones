@@ -8,6 +8,11 @@ export const useAgentesIA = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch all agents on mount
+  useEffect(() => {
+    fetchAgentes();
+  }, []);
+
   // Fetch all agents
   const fetchAgentes = useCallback(async () => {
     setLoading(true);
