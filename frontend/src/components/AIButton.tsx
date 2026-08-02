@@ -213,9 +213,9 @@ export const AIButton = ({
                   }`}
                 >
                   <div className="flex justify-between items-start mb-1">
-                    <span className="text-xs font-medium {
+                    <span className={`text-xs font-medium ${
                       message.role === "user" ? "text-gray-600" : "text-blue-600"
-                    }">
+                    }`}>
                       {message.role === "user" ? "Tú" : "Asistente IA"}
                     </span>
                     <span className="text-xs text-gray-400">
