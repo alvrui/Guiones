@@ -676,19 +676,6 @@ export const aiNarrativeAPI = {
   },
 };
 
-// Export all APIs
-export default {
-  proyecto: proyectoAPI,
-  personaje: personajeAPI,
-  narrativa: narrativaAPI,
-  trama: tramaAPI,
-  estructura: estructuraAPI,
-  aiCharacter: aiCharacterAPI,
-  aiPlot: aiPlotAPI,
-  aiScene: aiSceneAPI,
-  aiNarrative: aiNarrativeAPI,
-};
-
 // ==================== AgenteIA API ====================
 
 export const agenteIAAPI = {
@@ -753,18 +740,4 @@ export const agenteIAAPI = {
       handleError(error as AxiosError);
     }
   },
-};
-
-// Export all APIs
-export default {
-  proyecto: proyectoAPI,
-  personaje: personajeAPI,
-  narrativa: narrativaAPI,
-  trama: tramaAPI,
-  estructura: estructuraAPI,
-  agenteIA: agenteIAAPI,
-  aiCharacter: aiCharacterAPI,
-  aiPlot: aiPlotAPI,
-  aiScene: aiSceneAPI,
-  aiNarrative: aiNarrativeAPI,
 };
