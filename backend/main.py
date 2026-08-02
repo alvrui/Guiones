@@ -65,7 +65,8 @@ app.include_router(estructura.router, prefix="/api/estructura", tags=["estructur
 
 # Documento routes
 app.include_router(documentos.router, prefix="/api", tags=["documentos"])
-n# AgenteIA routes
+
+# AgenteIA routes
 app.include_router(agentes_ia.router, prefix="/api/agentes-ia", tags=["agentes_ia"])
 
 # AI Character routes

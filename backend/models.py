@@ -3,10 +3,10 @@ SQLAlchemy models for the Guiones database.
 Defines the tables: proyectos, personajes, narrativas, tramas, estructura_narrativa.
 """
 
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, Date, JSON, Enum
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, Date, JSON, Enum, Float, Boolean
 from .database import Base
 import uuid
-from datetime import datetime
+from datetime import datetime, date
 
 
 # Enums for SQLAlchemy (SQLite doesn't have native ENUM, so we use String with constraints)
