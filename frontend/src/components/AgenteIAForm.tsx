@@ -29,11 +29,12 @@ interface AgenteIAFormProps {
 
 // Available sections
 const SECCIONES = [
-  "character",
-  "plot",
-  "scene",
-  "narrative",
-  "project",
+  "proyectos",
+  "agentes",
+  "personajes",
+  "narrativas",
+  "tramas",
+  "estructura",
 ];
 
 // Available Mistral models
@@ -62,7 +63,6 @@ export const AgenteIAForm = ({
     resolver: zodResolver(agenteIASchema),
     defaultValues: {
       nombre: agente?.nombre || "",
-      seccion: agente?.seccion || "character",
       modelo_mistral: agente?.modelo_mistral || "mistral-tiny",
       temperatura: agente?.temperatura || 0.7,
       max_tokens: agente?.max_tokens || 500,
