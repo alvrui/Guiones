@@ -8,7 +8,7 @@ import { PlotsPage } from "./pages/PlotsPage";
 import { StructurePage } from "./pages/StructurePage";
 import { GraphPage } from "./pages/GraphPage";
 import { NotificationContainer } from "./components/Notification";
-import { ProjectProvider } from "./contexts/ProjectContext";
+import { ProjectProvider, useProjectContext } from "./contexts/ProjectContext";
 import { useProject } from "./hooks/useProject";
 import type { Notification as NotificationType } from "./types";
 
@@ -17,13 +17,41 @@ type Tab = "proyecto" | "personajes" | "narrativas" | "tramas" | "estructura" | 
 
 // Sidebar component
 const Sidebar = () => {
+  const { proyectoActual } = useProjectContext();
+  const { fetchProyectos } = useProject();
+
   return (
     <div className="w-64 bg-gray-100 p-4 h-full">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Guiones</h1>
         <p className="text-sm text-gray-500">Creador de guiones con IA</p>
       </div>
-      
+
+      {/* Proyecto Actual */}
+      {proyectoActual && (
+        <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+          <div className="flex items-center gap-2">
+            <span className="text-blue-600">📁</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-800 truncate">
+                Proyecto Actual
+              </p>
+              <p className="text-sm text-blue-700 truncate">
+                {proyectoActual.titulo}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {!proyectoActual && (
+        <div className="mb-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+          <p className="text-sm text-yellow-700">
+            No hay proyecto seleccionado
+          </p>
+        </div>
+      )}
+
       <nav className="space-y-2">
         <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
           Navegación
@@ -46,21 +74,21 @@ const Sidebar = () => {
           href="/narrativas"
           className="flex items-center gap-2 p-2 text-gray-700 hover:bg-gray-200 rounded transition-colors"
         >
-          <span>📖</span>
+          <span>📜</span>
           <span>Narrativas</span>
         </a>
         <a
           href="/tramas"
           className="flex items-center gap-2 p-2 text-gray-700 hover:bg-gray-200 rounded transition-colors"
         >
-          <span>🎭</span>
+          <span>🌪️</span>
           <span>Tramas</span>
         </a>
         <a
           href="/estructura"
           className="flex items-center gap-2 p-2 text-gray-700 hover:bg-gray-200 rounded transition-colors"
         >
-          <span>📜</span>
+          <span>📊</span>
           <span>Estructura</span>
         </a>
         <a
@@ -152,11 +180,11 @@ const App = () => {
   return (
     <Router>
       <ProjectProvider>
-      <div className="flex h-screen bg-gray-50">
-        <Sidebar />
-        <MainContent />
-      </div>
-    </ProjectProvider>
+        <div className="flex h-screen bg-gray-50">
+          <Sidebar />
+          <MainContent />
+        </div>
+      </ProjectProvider>
     </Router>
   );
 };
