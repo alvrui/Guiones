@@ -61,7 +61,7 @@ start_backend() {
     VENV_PYTHON="$BACKEND_DIR/venv/bin/python"
     
     # Ejecutar desde el directorio raíz de guiones (donde está backend/)
-    nohup bash -c "cd $BACKEND_DIR/.. && $VENV_PYTHON -m uvicorn backend.main:app --reload --host :: --port 8002" > "$LOG_BACKEND" 2>&1 &
+    nohup bash -c "cd $BACKEND_DIR/.. && $VENV_PYTHON -m uvicorn backend.main:app --reload --host 0.0.0.0 --port 8002" > "$LOG_BACKEND" 2>&1 &
     BACKEND_PID=$!
     
     # Guardar PID
