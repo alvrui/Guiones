@@ -12,36 +12,78 @@ from enum import Enum
 class TipoNarracion(str, Enum):
     LINEAL = "Lineal"
     NO_LINEAL = "No lineal"
-    IN_MEDIA_RES = "In media res"
-    PARALELA = "Paralela"
-    EPISODICA = "Episódica"
     CIRCULAR = "Circular"
-    ASOCIATIVA = "Asociativa"
+    EPISODICA = "Episódica"
+    MODULAR = "Modular"
+    IN_MEDIA_RES = "In media res"
+    FRAME_NARRATIVE = "Frame narrative"
+    INTERACTIVA = "Interactiva"
 
 
 class Estilo(str, Enum):
     REALISTA = "Realista"
     SURREALISTA = "Surrealista"
-    EPICO = "Épico"
-    SATIRA = "Sátira"
-    FABULA = "Fábula"
-    DRAMA = "Drama"
-    COMEDIA = "Comedia"
-    TERROR = "Terror"
-    AVENTURA = "Aventura"
+    FANTASTICO = "Fantástico"
     CIENCIA_FICCION = "Ciencia ficción"
-    FANTASIA = "Fantasía"
+    NOIR = "Noir"
+    SATIRICO = "Satírico"
+    POETICO = "Poético"
+    MINIMALISTA = "Minimalista"
+    EXPERIMENTAL = "Experimental"
+    MAGIC_REALISM = "Magic realism"
+    PULP = "Pulp"
+    CYBERPUNK = "Cyberpunk"
+    STEAMPUNK = "Steampunk"
+    GOTICO = "Gótico"
+    HARDBOILED = "Hardboiled"
 
 
 class TonoGeneral(str, Enum):
+    MELANCOLICO = "Melancólico"
+    IRONICO = "Irónico"
+    TRAGICO = "Trágico"
+    COMICO = "Cómico"
+    SATIRICO = "Satírico"
+    ESPERANZADOR = "Esperanzador"
     OSCURO = "Oscuro"
     LIGERO = "Ligero"
-    MELANCOLICO = "Melancólico"
-    ESPERANZADOR = "Esperanzador"
-    IRONICO = "Irónico"
     SUSPENSE = "Suspense"
-    TENSO = "Tenso"
-    COMICO = "Cómico"
+    BILDUNGSROMAN = "Bildungsroman"
+    ABSURDO = "Absurdo"
+    NOSTALGICO = "Nostalógico"
+    CINICO = "Cínico"
+    EPICO = "Épico"
+
+
+class GeneroPrincipal(str, Enum):
+    DRAMA = "Drama"
+    COMEDIA = "Comedia"
+    ACCION = "Acción"
+    TERROR = "Terror"
+    ROMANCE = "Romance"
+    AVENTURA = "Aventura"
+    MISTERIO = "Misterio"
+    CIENCIA_FICCION = "Ciencia ficción"
+    FANTASIA = "Fantasía"
+    THRILLER = "Thriller"
+    WESTERN = "Western"
+    NOIR = "Noir"
+    DOCUFICCION = "Docuficción"
+    FICCION_HISTORICA = "Ficción histórica"
+    DISTOPIA = "Distopía"
+    UTOPIA = "Utopía"
+
+
+class EstructuraNarrativaBase(str, Enum):
+    TRES_ACTOS = "Tres actos"
+    VIAJE_DEL_HEROE = "Viaje del héroe"
+    SAVE_THE_CAT = "Save the Cat"
+    SEVEN_POINT = "Seven-Point Story Structure"
+    FREYTAG = "Freytag's Pyramid"
+    IN_MEDIAS_RES = "In Medias Res"
+    NON_LINEAR = "Non-linear"
+    CIRCULAR = "Circular"
+    PARALLEL_NARRATIVES = "Parallel Narratives"
 
 
 class Genero(str, Enum):
@@ -115,9 +157,13 @@ class ProyectoBase(BaseModel):
     contexto_historico: Optional[str] = Field(None, description="Contexto histórico")
     contexto_social: Optional[str] = Field(None, description="Contexto social")
     contexto_geografico: Optional[str] = Field(None, description="Contexto geográfico")
-    contexto_cultural: Optional[str] = Field(None, description="Contexto cultural")
-    entorno_sensorial: Optional[str] = Field(None, description="Entorno sensorial")
+    contexto_ambiental: Optional[str] = Field(None, description="Contexto ambiental")
     temas_principales: Optional[List[str]] = Field(None, description="Temas principales")
+    genero_principal: Optional[GeneroPrincipal] = Field(None, description="Género principal")
+    estructura_narrativa_base: Optional[EstructuraNarrativaBase] = Field(None, description="Estructura narrativa base")
+    inspiraciones_referencias: Optional[str] = Field(None, description="Inspiraciones o referencias")
+    restricciones_limitaciones: Optional[str] = Field(None, description="Restricciones o limitaciones")
+    palabras_clave: Optional[List[str]] = Field(None, description="Palabras clave")
     fecha_creacion: Optional[date] = Field(None, description="Fecha de creación")
     fecha_ultima_modificacion: Optional[date] = Field(None, description="Fecha de última modificación")
 
@@ -135,9 +181,13 @@ class ProyectoUpdate(BaseModel):
     contexto_historico: Optional[str] = None
     contexto_social: Optional[str] = None
     contexto_geografico: Optional[str] = None
-    contexto_cultural: Optional[str] = None
-    entorno_sensorial: Optional[str] = None
+    contexto_ambiental: Optional[str] = None
     temas_principales: Optional[List[str]] = None
+    genero_principal: Optional[GeneroPrincipal] = None
+    estructura_narrativa_base: Optional[EstructuraNarrativaBase] = None
+    inspiraciones_referencias: Optional[str] = None
+    restricciones_limitaciones: Optional[str] = None
+    palabras_clave: Optional[List[str]] = None
 
 
 class Proyecto(ProyectoBase):
@@ -353,3 +403,33 @@ class Message(BaseModel):
 class ErrorMessage(Message):
     """Error message schema."""
     detail: Optional[str] = None
+
+
+# --- Schemas for Documento ---
+class DocumentoBase(BaseModel):
+    proyecto_id: str = Field(..., description="ID del proyecto al que pertenece")
+    nombre: str = Field(..., min_length=1, max_length=255, description="Nombre del documento")
+    tipo: str = Field(..., description="Tipo de archivo: pdf, txt, docx, md, otro")
+    contenido: str = Field(..., description="Contenido de texto del documento")
+    tamano_bytes: Optional[int] = Field(None, description="Tamaño en bytes")
+    ruta_archivo: Optional[str] = Field(None, description="Ruta del archivo subido")
+
+
+class DocumentoCreate(DocumentoBase):
+    pass
+
+
+class DocumentoUpdate(BaseModel):
+    nombre: Optional[str] = Field(None, min_length=1, max_length=255)
+    tipo: Optional[str] = None
+    contenido: Optional[str] = None
+    tamano_bytes: Optional[int] = None
+    ruta_archivo: Optional[str] = None
+
+
+class Documento(DocumentoBase):
+    id: str = Field(..., description="UUID del documento")
+    fecha_subida: Optional[date] = Field(None, description="Fecha de subida")
+
+    class Config:
+        from_attributes = True

@@ -13,11 +13,12 @@ class TipoNarracion:
     VALUES = [
         "Lineal",
         "No lineal",
-        "In media res",
-        "Paralela",
-        "Episódica",
         "Circular",
-        "Asociativa",
+        "Episódica",
+        "Modular",
+        "In media res",
+        "Frame narrative",
+        "Interactiva",
     ]
 
 
@@ -25,28 +26,73 @@ class Estilo:
     VALUES = [
         "Realista",
         "Surrealista",
-        "Épico",
-        "Sátira",
-        "Fábula",
-        "Drama",
-        "Comedia",
-        "Terror",
-        "Aventura",
+        "Fantástico",
         "Ciencia ficción",
-        "Fantasía",
+        "Noir",
+        "Satírico",
+        "Poético",
+        "Minimalista",
+        "Experimental",
+        "Magic realism",
+        "Pulp",
+        "Cyberpunk",
+        "Steampunk",
+        "Gótico",
+        "Hardboiled",
     ]
 
 
 class TonoGeneral:
     VALUES = [
+        "Melancólico",
+        "Irónico",
+        "Trágico",
+        "Cómico",
+        "Satírico",
+        "Esperanzador",
         "Oscuro",
         "Ligero",
-        "Melancólico",
-        "Esperanzador",
-        "Irónico",
         "Suspense",
-        "Tenso",
-        "Cómico",
+        "Bildungsroman",
+        "Absurdo",
+        "Nostalógico",
+        "Cínico",
+        "Épico",
+    ]
+
+
+class GeneroPrincipal:
+    VALUES = [
+        "Drama",
+        "Comedia",
+        "Acción",
+        "Terror",
+        "Romance",
+        "Aventura",
+        "Misterio",
+        "Ciencia ficción",
+        "Fantasía",
+        "Thriller",
+        "Western",
+        "Noir",
+        "Docuficción",
+        "Ficción histórica",
+        "Distopía",
+        "Utopía",
+    ]
+
+
+class EstructuraNarrativaBase:
+    VALUES = [
+        "Tres actos",
+        "Viaje del héroe",
+        "Save the Cat",
+        "Seven-Point Story Structure",
+        "Freytag's Pyramid",
+        "In Medias Res",
+        "Non-linear",
+        "Circular",
+        "Parallel Narratives",
     ]
 
 
@@ -101,14 +147,18 @@ class Proyecto(Base):
     titulo = Column(String(255), nullable=False)
     tipo_narracion = Column(String(50), nullable=False)
     estilo = Column(String(50), nullable=False)
+    tono_general = Column(String(50), nullable=False)
+    sinopsis = Column(Text, nullable=False)
     contexto_historico = Column(Text)
     contexto_social = Column(Text)
     contexto_geografico = Column(Text)
-    contexto_cultural = Column(Text)
-    entorno_sensorial = Column(Text)
-    tono_general = Column(String(50), nullable=False)
+    contexto_ambiental = Column(Text)
     temas_principales = Column(JSON)  # List of strings
-    sinopsis = Column(Text, nullable=False)
+    genero_principal = Column(String(50))
+    estructura_narrativa_base = Column(String(100))
+    inspiraciones_referencias = Column(Text)
+    restricciones_limitaciones = Column(Text)
+    palabras_clave = Column(JSON)  # List of strings
     fecha_creacion = Column(Date)
     fecha_ultima_modificacion = Column(Date)
 
@@ -202,3 +252,20 @@ class EstructuraNarrativa(Base):
 
     def __repr__(self):
         return f"<EstructuraNarrativa(id={self.id}, tipo='{self.tipo}', titulo='{self.titulo}')>"
+
+
+class Documento(Base):
+    """Model for the Documentos table."""
+    __tablename__ = "documentos"
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    proyecto_id = Column(String(36), ForeignKey("proyectos.id", ondelete="CASCADE"), nullable=False)
+    nombre = Column(String(255), nullable=False)
+    tipo = Column(String(50), nullable=False)  # pdf, txt, docx, md, otro
+    contenido = Column(Text, nullable=False)
+    tamano_bytes = Column(Integer)
+    ruta_archivo = Column(String(500))
+    fecha_subida = Column(Date, default=datetime.now)
+
+    def __repr__(self):
+        return f"<Documento(id={self.id}, nombre='{self.nombre}')>"

@@ -1,9 +1,11 @@
 // Types for the Guiones application
 
 // Enums for TypeScript
-export type TipoNarracion = "Lineal" | "No lineal" | "In media res" | "Paralela" | "Episódica" | "Circular" | "Asociativa";
-export type Estilo = "Realista" | "Surrealista" | "Épico" | "Sátira" | "Fábula" | "Drama" | "Comedia" | "Terror" | "Aventura" | "Ciencia ficción" | "Fantasía";
-export type TonoGeneral = "Oscuro" | "Ligero" | "Melancólico" | "Esperanzador" | "Irónico" | "Suspense" | "Tenso" | "Cómico";
+export type TipoNarracion = "Lineal" | "No lineal" | "Circular" | "Episódica" | "Modular" | "In media res" | "Frame narrative" | "Interactiva";
+export type Estilo = "Realista" | "Surrealista" | "Fantástico" | "Ciencia ficción" | "Noir" | "Satírico" | "Poético" | "Minimalista" | "Experimental" | "Magic realism" | "Pulp" | "Cyberpunk" | "Steampunk" | "Gótico" | "Hardboiled";
+export type TonoGeneral = "Melancólico" | "Irónico" | "Trágico" | "Cómico" | "Satírico" | "Esperanzador" | "Oscuro" | "Ligero" | "Suspense" | "Bildungsroman" | "Absurdo" | "Nostalógico" | "Cínico" | "Épico";
+export type GeneroPrincipal = "Drama" | "Comedia" | "Acción" | "Terror" | "Romance" | "Aventura" | "Misterio" | "Ciencia ficción" | "Fantasía" | "Thriller" | "Western" | "Noir" | "Docuficción" | "Ficción histórica" | "Distopía" | "Utopía";
+export type EstructuraNarrativaBase = "Tres actos" | "Viaje del héroe" | "Save the Cat" | "Seven-Point Story Structure" | "Freytag's Pyramid" | "In Medias Res" | "Non-linear" | "Circular" | "Parallel Narratives";
 export type Genero = "Hombre" | "Mujer" | "No binario" | "Otro";
 export type Arquetipo = "Héroe" | "Mentor" | "Antagonista" | "Aliado" | "Víctima" | "Trickster" | "Guardian" | "Explorador";
 export type ArquetipoNarrativo = "Viaje del Héroe" | "Tragedia" | "Comedia" | "Búsqueda" | "Aventura" | "Misterio" | "Romance" | "Supervivencia";
@@ -18,14 +20,18 @@ export interface Proyecto {
   titulo: string;
   tipo_narracion: TipoNarracion;
   estilo: Estilo;
+  tono_general: TonoGeneral;
+  sinopsis: string;
   contexto_historico?: string;
   contexto_social?: string;
   contexto_geografico?: string;
-  contexto_cultural?: string;
-  entorno_sensorial?: string;
-  tono_general: TonoGeneral;
+  contexto_ambiental?: string;
   temas_principales?: string[];
-  sinopsis: string;
+  genero_principal?: GeneroPrincipal;
+  estructura_narrativa_base?: EstructuraNarrativaBase;
+  inspiraciones_referencias?: string;
+  restricciones_limitaciones?: string;
+  palabras_clave?: string[];
   fecha_creacion?: string;
   fecha_ultima_modificacion?: string;
 }
@@ -39,9 +45,13 @@ export interface ProyectoCreate {
   contexto_historico?: string;
   contexto_social?: string;
   contexto_geografico?: string;
-  contexto_cultural?: string;
-  entorno_sensorial?: string;
+  contexto_ambiental?: string;
   temas_principales?: string[];
+  genero_principal?: GeneroPrincipal;
+  estructura_narrativa_base?: EstructuraNarrativaBase;
+  inspiraciones_referencias?: string;
+  restricciones_limitaciones?: string;
+  palabras_clave?: string[];
 }
 
 export interface ProyectoUpdate {
@@ -53,9 +63,13 @@ export interface ProyectoUpdate {
   contexto_historico?: string;
   contexto_social?: string;
   contexto_geografico?: string;
-  contexto_cultural?: string;
-  entorno_sensorial?: string;
+  contexto_ambiental?: string;
   temas_principales?: string[];
+  genero_principal?: GeneroPrincipal;
+  estructura_narrativa_base?: EstructuraNarrativaBase;
+  inspiraciones_referencias?: string;
+  restricciones_limitaciones?: string;
+  palabras_clave?: string[];
 }
 
 // Interfaces for Personaje
@@ -304,4 +318,14 @@ export interface Notification {
   type: NotificationType;
   message: string;
   duration?: number;
+}
+
+// Document types
+export interface Documento {
+  id: string;
+  proyecto_id: string;
+  nombre: string;
+  tipo: "pdf" | "txt" | "docx" | "md" | "otro";
+  contenido: string;
+  fecha_subida: string;
 }

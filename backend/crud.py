@@ -563,3 +563,56 @@ def import_proyecto_from_json(db: Session, data: Dict[str, Any]) -> Optional[mod
         create_estructura(db, estructura_create, proyecto.id)
     
     return proyecto
+
+
+# --- Documento CRUD ---
+def get_documento(db: Session, documento_id: str) -> Optional[models.Documento]:
+    """Get a document by ID."""
+    return db.query(models.Documento).filter(models.Documento.id == documento_id).first()
+
+
+def get_documentos_by_proyecto(db: Session, proyecto_id: str, skip: int = 0, limit: int = 100) -> List[models.Documento]:
+    """Get all documents for a project."""
+    return db.query(models.Documento).filter(
+        models.Documento.proyecto_id == proyecto_id
+    ).offset(skip).limit(limit).all()
+
+
+def create_documento(db: Session, documento: schemas.DocumentoCreate) -> models.Documento:
+    """Create a new document."""
+    from datetime import date
+    db_documento = models.Documento(
+        **documento.model_dump(),
+        fecha_subida=date.today(),
+    )
+    db.add(db_documento)
+    db.commit()
+    db.refresh(db_documento)
+    return db_documento
+
+
+def update_documento(db: Session, documento_id: str, documento: schemas.DocumentoUpdate) -> Optional[models.Documento]:
+    """Update a document."""
+    db_documento = db.query(models.Documento).filter(models.Documento.id == documento_id).first()
+    if not db_documento:
+        return None
+    
+    update_data = documento.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        setattr(db_documento, field, value)
+    
+    db.add(db_documento)
+    db.commit()
+    db.refresh(db_documento)
+    return db_documento
+
+
+def delete_documento(db: Session, documento_id: str) -> Optional[models.Documento]:
+    """Delete a document."""
+    db_documento = db.query(models.Documento).filter(models.Documento.id == documento_id).first()
+    if not db_documento:
+        return None
+    
+    db.delete(db_documento)
+    db.commit()
+    return db_documento

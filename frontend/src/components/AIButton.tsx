@@ -1,12 +1,13 @@
 // AIButton component for generating content with AI
 import { useState, useRef, useEffect } from "react";
 import { useAI } from "../hooks/useAI";
-import { Personaje, Proyecto, Trama, Narrativa, EstructuraNarrativa } from "../types";
+import { Personaje, Proyecto, Trama, Narrativa, EstructuraNarrativa, Documento } from "../types";
 
 interface AIButtonProps {
   field: string;
   section: "character" | "plot" | "scene" | "narrative";
   context: Record<string, any>;
+  documentos?: Documento[];
   onGenerate: (content: string) => void;
   className?: string;
   disabled?: boolean;
@@ -16,6 +17,7 @@ export const AIButton = ({
   field,
   section,
   context,
+  documentos = [],
   onGenerate,
   className = "",
   disabled = false,
@@ -34,6 +36,24 @@ export const AIButton = ({
     };
   }, [clearError]);
 
+  // Prepare enhanced context with documents
+  const getEnhancedContext = () => {
+    const baseContext = { ...context };
+    
+    // Add documents content to context if available
+    if (documentos && documentos.length > 0) {
+      baseContext.documentos = documentos.map(doc => ({
+        nombre: doc.nombre,
+        tipo: doc.tipo,
+        contenido: doc.contenido.length > 2000 
+          ? `${doc.contenido.substring(0, 2000)}...` 
+          : doc.contenido
+      }));
+    }
+    
+    return baseContext;
+  };
+
   // Generate content based on section
   const handleGenerate = async () => {
     if (disabled || isLoading) return;
@@ -44,20 +64,21 @@ export const AIButton = ({
     setIsValidated(false);
 
     try {
+      const enhancedContext = getEnhancedContext();
       let content: string | null = null;
 
       switch (section) {
         case "character":
-          content = await generateCharacterField(field, context);
+          content = await generateCharacterField(field, enhancedContext);
           break;
         case "plot":
-          content = await generatePlotField(field, context);
+          content = await generatePlotField(field, enhancedContext);
           break;
         case "scene":
-          content = await generateSceneField(field, context);
+          content = await generateSceneField(field, enhancedContext);
           break;
         case "narrative":
-          content = await generateNarrativeField(field, context);
+          content = await generateNarrativeField(field, enhancedContext);
           break;
       }
 
@@ -89,6 +110,11 @@ export const AIButton = ({
   // Show error from AI hook
   const displayError = aiError || localError;
 
+  // Show tooltip with document count
+  const tooltipText = documentos && documentos.length > 0
+    ? `Generar con IA (${documentos.length} documento${documentos.length > 1 ? 's' : ''} como referencia)`
+    : `Generar ${field} con IA`;
+
   return (
     <div className={`flex items-start gap-2 ${className}`}>
       <button
@@ -98,8 +124,8 @@ export const AIButton = ({
         className={`p-1 rounded text-xl hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${
           isLoading ? "animate-pulse" : ""
         }`}
-        title={`Generar ${field} con IA`}
-        aria-label={`Generar ${field} con IA`}
+        title={tooltipText}
+        aria-label={tooltipText}
       >
         {isLoading ? "⏳" : "🤖"}
       </button>
