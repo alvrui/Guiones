@@ -8,6 +8,7 @@ import { PlotsPage } from "./pages/PlotsPage";
 import { StructurePage } from "./pages/StructurePage";
 import { GraphPage } from "./pages/GraphPage";
 import { NotificationContainer } from "./components/Notification";
+import { ProjectProvider } from "./contexts/ProjectContext";
 import { useProject } from "./hooks/useProject";
 import type { Notification as NotificationType } from "./types";
 
@@ -150,10 +151,12 @@ const MainContent = () => {
 const App = () => {
   return (
     <Router>
+      <ProjectProvider>
       <div className="flex h-screen bg-gray-50">
         <Sidebar />
         <MainContent />
       </div>
+    </ProjectProvider>
     </Router>
   );
 };
