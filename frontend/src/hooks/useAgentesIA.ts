@@ -44,8 +44,7 @@ export const useAgentesIA = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await agenteIAAPI.post("/agentes-ia", data);
-      const nuevoAgente = response.data;
+      const nuevoAgente = await agenteIAAPI.create(data);
       setAgentes((prev) => [...prev, nuevoAgente]);
       return nuevoAgente;
     } catch (err) {
