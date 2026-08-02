@@ -433,3 +433,41 @@ class Documento(DocumentoBase):
 
     class Config:
         from_attributes = True
+
+
+# --- Schemas for AgenteIA ---
+class AgenteIABase(BaseModel):
+    nombre: str = Field(..., min_length=1, max_length=255, description="Nombre del agente IA")
+    seccion: str = Field(..., description="Sección para la que está configurado: character, plot, scene, narrative, etc.")
+    modelo_mistral: str = Field(default="mistral-tiny", description="Modelo de Mistral: mistral-tiny, mistral-small, mistral-medium")
+    temperatura: float = Field(default=0.7, ge=0.0, le=2.0, description="Temperatura para generación")
+    max_tokens: int = Field(default=500, ge=10, le=4096, description="Máximo de tokens a generar")
+    prompt_sistema: Optional[str] = Field(None, description="Prompt de sistema para el agente")
+    prompt_especifico: Optional[str] = Field(None, description="Prompt específico para tareas")
+    configuracion_avanzada: Optional[Dict[str, Any]] = Field(None, description="Configuración avanzada adicional")
+    es_activo: bool = Field(default=True, description="Si el agente está activo")
+
+
+class AgenteIACreate(AgenteIABase):
+    pass
+
+
+class AgenteIAUpdate(BaseModel):
+    nombre: Optional[str] = Field(None, min_length=1, max_length=255)
+    seccion: Optional[str] = None
+    modelo_mistral: Optional[str] = None
+    temperatura: Optional[float] = Field(None, ge=0.0, le=2.0)
+    max_tokens: Optional[int] = Field(None, ge=10, le=4096)
+    prompt_sistema: Optional[str] = None
+    prompt_especifico: Optional[str] = None
+    configuracion_avanzada: Optional[Dict[str, Any]] = None
+    es_activo: Optional[bool] = None
+
+
+class AgenteIA(AgenteIABase):
+    id: str = Field(..., description="UUID del agente IA")
+    fecha_creacion: Optional[date] = Field(None, description="Fecha de creación")
+    fecha_ultima_modificacion: Optional[date] = Field(None, description="Fecha de última modificación")
+
+    class Config:
+        from_attributes = True

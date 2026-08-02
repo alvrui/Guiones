@@ -617,3 +617,64 @@ def delete_documento(db: Session, documento_id: str) -> Optional[models.Document
     db.delete(db_documento)
     db.commit()
     return db_documento
+
+
+# --- AgenteIA CRUD ---
+def get_agente_ia(db: Session, agente_id: str) -> Optional[models.AgenteIA]:
+    """Get an AI agent by ID."""
+    return db.query(models.AgenteIA).filter(models.AgenteIA.id == agente_id).first()
+
+
+def get_agentes_ia(db: Session, skip: int = 0, limit: int = 100) -> List[models.AgenteIA]:
+    """Get all AI agents with pagination."""
+    return db.query(models.AgenteIA).offset(skip).limit(limit).all()
+
+
+def get_agentes_ia_by_seccion(db: Session, seccion: str) -> List[models.AgenteIA]:
+    """Get all AI agents for a specific section."""
+    return db.query(models.AgenteIA).filter(
+        models.AgenteIA.seccion == seccion,
+        models.AgenteIA.es_activo == True
+    ).all()
+
+
+def create_agente_ia(db: Session, agente: schemas.AgenteIACreate) -> models.AgenteIA:
+    """Create a new AI agent."""
+    from datetime import date
+    db_agente = models.AgenteIA(
+        **agente.model_dump(),
+        fecha_creacion=date.today(),
+        fecha_ultima_modificacion=date.today(),
+    )
+    db.add(db_agente)
+    db.commit()
+    db.refresh(db_agente)
+    return db_agente
+
+
+def update_agente_ia(db: Session, agente_id: str, agente: schemas.AgenteIAUpdate) -> Optional[models.AgenteIA]:
+    """Update an AI agent."""
+    db_agente = db.query(models.AgenteIA).filter(models.AgenteIA.id == agente_id).first()
+    if not db_agente:
+        return None
+    
+    update_data = agente.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        setattr(db_agente, field, value)
+    
+    db_agente.fecha_ultima_modificacion = date.today()
+    db.add(db_agente)
+    db.commit()
+    db.refresh(db_agente)
+    return db_agente
+
+
+def delete_agente_ia(db: Session, agente_id: str) -> Optional[models.AgenteIA]:
+    """Delete an AI agent."""
+    db_agente = db.query(models.AgenteIA).filter(models.AgenteIA.id == agente_id).first()
+    if not db_agente:
+        return None
+    
+    db.delete(db_agente)
+    db.commit()
+    return db_agente

@@ -270,3 +270,24 @@ class Documento(Base):
 
     def __repr__(self):
         return f"<Documento(id={self.id}, nombre='{self.nombre}')>"
+
+
+class AgenteIA(Base):
+    """Model for the AgenteIA table."""
+    __tablename__ = "agentes_ia"
+
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    nombre = Column(String(255), nullable=False)
+    seccion = Column(String(50), nullable=False)  # character, plot, scene, narrative, etc.
+    modelo_mistral = Column(String(50), default="mistral-tiny")  # mistral-tiny, mistral-small, mistral-medium
+    temperatura = Column(Float, default=0.7)
+    max_tokens = Column(Integer, default=500)
+    prompt_sistema = Column(Text)
+    prompt_especifico = Column(Text)
+    configuracion_avanzada = Column(JSON)  # Additional configuration
+    es_activo = Column(Boolean, default=True)
+    fecha_creacion = Column(Date, default=date.today)
+    fecha_ultima_modificacion = Column(Date, default=date.today)
+
+    def __repr__(self):
+        return f"<AgenteIA(id={self.id}, nombre='{self.nombre}', seccion='{self.seccion}')>"

@@ -329,3 +329,43 @@ export interface Documento {
   contenido: string;
   fecha_subida: string;
 }
+
+// AI Agent types
+export interface AgenteIA {
+  id: string;
+  nombre: string;
+  seccion: string;
+  modelo_mistral: string;
+  temperatura: number;
+  max_tokens: number;
+  prompt_sistema?: string;
+  prompt_especifico?: string;
+  configuracion_avanzada?: Record<string, any>;
+  es_activo: boolean;
+  fecha_creacion?: string;
+  fecha_ultima_modificacion?: string;
+}
+
+export interface AgenteIACreate {
+  nombre: string;
+  seccion: string;
+  modelo_mistral?: string;
+  temperatura?: number;
+  max_tokens?: number;
+  prompt_sistema?: string;
+  prompt_especifico?: string;
+  configuracion_avanzada?: Record<string, any>;
+  es_activo?: boolean;
+}
+
+export interface AgenteIAUpdate {
+  nombre?: string;
+  seccion?: string;
+  modelo_mistral?: string;
+  temperatura?: number;
+  max_tokens?: number;
+  prompt_sistema?: string;
+  prompt_especifico?: string;
+  configuracion_avanzada?: Record<string, any>;
+  es_activo?: boolean;
+}

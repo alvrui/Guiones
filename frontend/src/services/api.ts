@@ -688,3 +688,83 @@ export default {
   aiScene: aiSceneAPI,
   aiNarrative: aiNarrativeAPI,
 };
+
+// ==================== AgenteIA API ====================
+
+export const agenteIAAPI = {
+  // Get all AI agents
+  getAll: async (skip: number = 0, limit: number = 100): Promise<AgenteIA[]> => {
+    try {
+      const response = await api.get<AgenteIA[]>("/agentes-ia/", {
+        params: { skip, limit },
+      });
+      return response.data;
+    } catch (error) {
+      handleError(error as AxiosError);
+    }
+  },
+
+  // Get AI agents by section
+  getBySeccion: async (seccion: string): Promise<AgenteIA[]> => {
+    try {
+      const response = await api.get<AgenteIA[]>(`/agentes-ia/seccion/${seccion}`);
+      return response.data;
+    } catch (error) {
+      handleError(error as AxiosError);
+    }
+  },
+
+  // Get an AI agent by ID
+  getById: async (id: string): Promise<AgenteIA> => {
+    try {
+      const response = await api.get<AgenteIA>(`/agentes-ia/${id}`);
+      return response.data;
+    } catch (error) {
+      handleError(error as AxiosError);
+    }
+  },
+
+  // Create a new AI agent
+  create: async (data: AgenteIACreate): Promise<AgenteIA> => {
+    try {
+      const response = await api.post<AgenteIA>("/agentes-ia/", data);
+      return response.data;
+    } catch (error) {
+      handleError(error as AxiosError);
+    }
+  },
+
+  // Update an AI agent
+  update: async (id: string, data: AgenteIAUpdate): Promise<AgenteIA> => {
+    try {
+      const response = await api.put<AgenteIA>(`/agentes-ia/${id}`, data);
+      return response.data;
+    } catch (error) {
+      handleError(error as AxiosError);
+    }
+  },
+
+  // Delete an AI agent
+  delete: async (id: string): Promise<AgenteIA> => {
+    try {
+      const response = await api.delete<AgenteIA>(`/agentes-ia/${id}`);
+      return response.data;
+    } catch (error) {
+      handleError(error as AxiosError);
+    }
+  },
+};
+
+// Export all APIs
+export default {
+  proyecto: proyectoAPI,
+  personaje: personajeAPI,
+  narrativa: narrativaAPI,
+  trama: tramaAPI,
+  estructura: estructuraAPI,
+  agenteIA: agenteIAAPI,
+  aiCharacter: aiCharacterAPI,
+  aiPlot: aiPlotAPI,
+  aiScene: aiSceneAPI,
+  aiNarrative: aiNarrativeAPI,
+};

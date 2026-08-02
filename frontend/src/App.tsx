@@ -7,13 +7,14 @@ import { NarrativesPage } from "./pages/NarrativesPage";
 import { PlotsPage } from "./pages/PlotsPage";
 import { StructurePage } from "./pages/StructurePage";
 import { GraphPage } from "./pages/GraphPage";
+import { AgentesPage, AgenteSelector } from "./pages/AgentesPage";
 import { NotificationContainer } from "./components/Notification";
 import { ProjectProvider, useProjectContext } from "./contexts/ProjectContext";
 import { useProject } from "./hooks/useProject";
 import type { Notification as NotificationType } from "./types";
 
 // Tab type
-type Tab = "proyecto" | "personajes" | "narrativas" | "tramas" | "estructura" | "grafo";
+type Tab = "proyecto" | "personajes" | "narrativas" | "tramas" | "estructura" | "grafo" | "agentes";
 
 // Sidebar component
 const Sidebar = () => {
@@ -62,6 +63,13 @@ const Sidebar = () => {
         >
           <span>📁</span>
           <span>Proyectos</span>
+        </a>
+        <a
+          href="/agentes"
+          className="flex items-center gap-2 p-2 text-gray-700 hover:bg-gray-200 rounded transition-colors"
+        >
+          <span>🤖</span>
+          <span>Agentes IA</span>
         </a>
         <a
           href="/personajes"
@@ -140,6 +148,7 @@ const MainContent = () => {
   // Check if we should show a warning about no project selected
   const showProjectWarning = !proyectoActual && (
     window.location.pathname !== "/" &&
+    window.location.pathname !== "/agentes" &&
     !window.location.pathname.startsWith("/proyecto")
   );
 
@@ -158,6 +167,7 @@ const MainContent = () => {
       {/* Routes */}
       <Routes>
         <Route path="/" element={<ProjectPage />} />
+        <Route path="/agentes" element={<AgentesPage />} />
         <Route path="/personajes" element={<CharactersPage />} />
         <Route path="/narrativas" element={<NarrativesPage />} />
         <Route path="/tramas" element={<PlotsPage />} />
@@ -190,3 +200,4 @@ const App = () => {
 };
 
 export default App;
+export { AgenteSelector };
