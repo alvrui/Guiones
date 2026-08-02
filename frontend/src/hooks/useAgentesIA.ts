@@ -66,8 +66,7 @@ export const useAgentesIA = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await agenteIAAPI.put(`/agentes-ia/${id}`, data);
-      const agenteActualizado = response.data;
+      const agenteActualizado = await agenteIAAPI.update(id, data);
       setAgentes((prev) =>
         prev.map((a) => (a.id === id ? agenteActualizado : a))
       );
