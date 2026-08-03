@@ -1,4 +1,5 @@
 import { SectionWithAgent } from "../components/SectionWithAgent";
+import { SectionWithAgent } from "../components/SectionWithAgent";
 // NarrativesPage component for managing narratives
 import { useState } from "react";
 import { useNarratives } from "../hooks/useNarratives";
@@ -7,7 +8,17 @@ import { useCharacters } from "../hooks/useCharacters";
 import { Narrativa, NarrativaCreate, NarrativaUpdate, TipoEstructura, Estado } from "../types";
 import { Modal } from "../components/Modal";
 import { AIButton } from "../components/AIButton";
+import { SectionWithAgent } from "../components/SectionWithAgent";
 // NarrativeForm component
+interface NarrativeFormProps {
+  narrativa?: Narrativa | null;
+  proyecto: { id: string; estilo: string; tono_general: string };
+  personajes: Array<{ id: string; nombre: string }>;
+  onSubmit: (data: NarrativaCreate | NarrativaUpdate) => void;
+  onCancel: () => void;
+  isLoading: boolean;
+}
+
 const NarrativeForm = ({
   narrativa,
   proyecto,
@@ -15,14 +26,7 @@ const NarrativeForm = ({
   onSubmit,
   onCancel,
   isLoading,
-}: {
-  narrativa?: Narrativa | null;
-  proyecto: { id: string; estilo: string; tono_general: string };
-  personajes: Array<{ id: string; nombre: string }>;
-  onSubmit: (data: NarrativaCreate | NarrativaUpdate) => void;
-  onCancel: () => void;
-  isLoading: boolean;
-}) => {
+}: NarrativeFormProps) => {
   const [formData, setFormData] = useState({
     titulo: narrativa?.titulo || "",
     tipo_estructura: narrativa?.tipo_estructura || "Lineal",
@@ -66,6 +70,7 @@ const NarrativeForm = ({
   });
 
   return (
+    <SectionWithAgent seccion="narrativas">
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="bg-white p-6 rounded-lg shadow">
         <h2 className="text-xl font-bold text-gray-800 mb-6">
@@ -256,7 +261,9 @@ const NarrativeForm = ({
         </div>
       </div>
     </form>
+    </SectionWithAgent>
   );
+};
 
 // NarrativeCard component
 const NarrativeCard = ({
@@ -395,6 +402,7 @@ export const NarrativesPage = () => {
 
   return (
     <SectionWithAgent seccion="narrativas">
+    <SectionWithAgent seccion="narrativas">
       <div className="p-4">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
@@ -472,6 +480,7 @@ export const NarrativesPage = () => {
           </Modal>
         </div>
       </div>
+    </SectionWithAgent>
     </SectionWithAgent>
   );
 };
