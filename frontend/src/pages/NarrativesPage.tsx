@@ -66,7 +66,6 @@ const NarrativeForm = ({
   });
 
   return (
-    <SectionWithAgent seccion="narrativas">
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="bg-white p-6 rounded-lg shadow">
         <h2 className="text-xl font-bold text-gray-800 mb-6">
@@ -257,8 +256,6 @@ const NarrativeForm = ({
         </div>
       </div>
     </form>
-    </SectionWithAgent>
-  );
 };
 
 // NarrativeCard component
