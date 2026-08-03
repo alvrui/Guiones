@@ -1,5 +1,4 @@
 import { SectionWithAgent } from "../components/SectionWithAgent";
-import { SectionWithAgent } from "../components/SectionWithAgent";
 // NarrativesPage component for managing narratives
 import { useState } from "react";
 import { useNarratives } from "../hooks/useNarratives";
