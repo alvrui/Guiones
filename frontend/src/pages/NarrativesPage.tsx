@@ -7,7 +7,6 @@ import { useCharacters } from "../hooks/useCharacters";
 import { Narrativa, NarrativaCreate, NarrativaUpdate, TipoEstructura, Estado } from "../types";
 import { Modal } from "../components/Modal";
 import { AIButton } from "../components/AIButton";
-import { SectionWithAgent } from "../components/SectionWithAgent";
 // NarrativeForm component
 const NarrativeForm = ({
   narrativa,
