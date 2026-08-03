@@ -1,3 +1,4 @@
+import { SectionWithAgent } from "../components/SectionWithAgent";
 // CharactersPage component for managing characters
 import { useState } from "react";
 import { useCharacters } from "../hooks/useCharacters";
@@ -74,6 +75,7 @@ export const CharactersPage = () => {
   };
 
   return (
+    <SectionWithAgent seccion="personajes">
     <div className="p-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
@@ -152,6 +154,7 @@ export const CharactersPage = () => {
         )}
       </div>
     </div>
+    </SectionWithAgent>
   );
 };
 

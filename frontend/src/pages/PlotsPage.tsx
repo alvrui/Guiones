@@ -1,3 +1,4 @@
+import { SectionWithAgent } from "../components/SectionWithAgent";
 // PlotsPage component for managing plots
 import { useState } from "react";
 import { usePlots } from "../hooks/usePlots";
@@ -145,6 +146,7 @@ const PlotForm = ({
   };
 
   return (
+    <SectionWithAgent seccion="tramas">
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="bg-white p-6 rounded-lg shadow">
         <h2 className="text-xl font-bold text-gray-800 mb-6">
@@ -378,6 +380,7 @@ const PlotForm = ({
         </div>
       </div>
     </form>
+    </SectionWithAgent>
   );
 };
 

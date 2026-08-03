@@ -1,3 +1,4 @@
+import { SectionWithAgent } from "../components/SectionWithAgent";
 // StructurePage component for managing narrative structure (acts and scenes)
 import { useState } from "react";
 import { useStructure } from "../hooks/useStructure";
@@ -124,6 +125,7 @@ const StructureForm = ({
   };
 
   return (
+    <SectionWithAgent seccion="estructura">
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="bg-white p-6 rounded-lg shadow">
         <h2 className="text-xl font-bold text-gray-800 mb-6">
@@ -399,6 +401,7 @@ const StructureForm = ({
         </div>
       </div>
     </form>
+    </SectionWithAgent>
   );
 };
 
