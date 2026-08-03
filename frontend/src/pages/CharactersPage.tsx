@@ -1,3 +1,4 @@
+import { SectionWithAgent } from "../components/SectionWithAgent";
 // CharactersPage component for managing characters
 import { useState } from "react";
 import { useCharacters } from "../hooks/useCharacters";
@@ -7,7 +8,6 @@ import { CharacterForm } from "../components/CharacterForm";
 import { CharacterCard } from "../components/CharacterCard";
 import { Modal } from "../components/Modal";
 import { SectionWithAgent } from "../components/SectionWithAgent";
-
 export const CharactersPage = () => {
   const { proyectoActual } = useProject();
   const {

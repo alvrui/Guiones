@@ -1,5 +1,4 @@
 import { SectionWithAgent } from "../components/SectionWithAgent";
-import { SectionWithAgent } from "../components/SectionWithAgent";
 // StructurePage component for managing narrative structure (acts and scenes)
 import { useState } from "react";
 import { useStructure } from "../hooks/useStructure";

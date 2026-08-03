@@ -1,3 +1,4 @@
+import { SectionWithAgent } from "../components/SectionWithAgent";
 // NarrativesPage component for managing narratives
 import { useState } from "react";
 import { useNarratives } from "../hooks/useNarratives";
@@ -7,7 +8,6 @@ import { Narrativa, NarrativaCreate, NarrativaUpdate, TipoEstructura, Estado } f
 import { Modal } from "../components/Modal";
 import { AIButton } from "../components/AIButton";
 import { SectionWithAgent } from "../components/SectionWithAgent";
-
 // NarrativeForm component
 const NarrativeForm = ({
   narrativa,

@@ -1,3 +1,4 @@
+import { SectionWithAgent } from "../components/SectionWithAgent";
 // PlotsPage component for managing plots
 import { useState } from "react";
 import { usePlots } from "../hooks/usePlots";
