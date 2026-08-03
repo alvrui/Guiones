@@ -256,7 +256,7 @@ const NarrativeForm = ({
         </div>
       </div>
     </form>
-};
+  );
 
 // NarrativeCard component
 const NarrativeCard = ({
