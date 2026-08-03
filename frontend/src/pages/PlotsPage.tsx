@@ -145,6 +145,8 @@ const PlotForm = ({
   };
 
   return (
+    <SectionWithAgent seccion="tramas">
+      
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="bg-white p-6 rounded-lg shadow">
         <h2 className="text-xl font-bold text-gray-800 mb-6">
@@ -378,6 +380,10 @@ const PlotForm = ({
         </div>
       </div>
     </form>
+
+    </SectionWithAgent>
+
+    </SectionWithAgent>
   );
 };
 
@@ -392,6 +398,8 @@ const PlotCard = ({
   onDelete: (id: string) => void;
 }) => {
   return (
+    <SectionWithAgent seccion="tramas">
+      
     <div className="bg-white p-4 rounded-lg shadow border border-gray-200">
       <div className="flex justify-between items-start mb-3">
         <div className="flex-1">
@@ -470,9 +478,15 @@ const PlotCard = ({
         )}
       </div>
     </div>
+
+    </SectionWithAgent>
+
+    </SectionWithAgent>
   );
 };
 
+  return (
+    <SectionWithAgent seccion="tramas">
 export const PlotsPage = () => {
   const { proyectoActual } = useProject();
   const {
@@ -545,6 +559,8 @@ export const PlotsPage = () => {
   };
 
   return (
+    <SectionWithAgent seccion="tramas">
+      
     <div className="p-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
@@ -623,6 +639,10 @@ export const PlotsPage = () => {
         )}
       </div>
     </div>
+
+    </SectionWithAgent>
+
+    </SectionWithAgent>
   );
 };
 

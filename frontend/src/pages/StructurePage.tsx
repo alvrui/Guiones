@@ -1,3 +1,5 @@
+import { SectionWithAgent } from "../components/SectionWithAgent";
+import { SectionWithAgent } from "../components/SectionWithAgent";
 // StructurePage component for managing narrative structure (acts and scenes)
 import { useState } from "react";
 import { useStructure } from "../hooks/useStructure";
@@ -124,6 +126,8 @@ const StructureForm = ({
   };
 
   return (
+    <SectionWithAgent seccion="estructura">
+      
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="bg-white p-6 rounded-lg shadow">
         <h2 className="text-xl font-bold text-gray-800 mb-6">
@@ -399,6 +403,10 @@ const StructureForm = ({
         </div>
       </div>
     </form>
+
+    </SectionWithAgent>
+
+    </SectionWithAgent>
   );
 };
 
@@ -413,6 +421,8 @@ const StructureCard = ({
   onDelete: (id: string) => void;
 }) => {
   return (
+    <SectionWithAgent seccion="estructura">
+      
     <div className="bg-white p-4 rounded-lg shadow border border-gray-200">
       <div className="flex justify-between items-start mb-3">
         <div className="flex-1">
@@ -497,10 +507,16 @@ const StructureCard = ({
         )}
       </div>
     </div>
+
+    </SectionWithAgent>
+
+    </SectionWithAgent>
   );
 };
 
 export const StructurePage = () => {
+  return (
+    <SectionWithAgent seccion="estructura">
   const { proyectoActual } = useProject();
   const {
     estructuras,
@@ -582,6 +598,8 @@ export const StructurePage = () => {
   };
 
   return (
+    <SectionWithAgent seccion="estructura">
+      
     <div className="p-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
@@ -688,6 +706,10 @@ export const StructurePage = () => {
         )}
       </div>
     </div>
+
+    </SectionWithAgent>
+
+    </SectionWithAgent>
   );
 };
 

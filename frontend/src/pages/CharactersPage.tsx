@@ -6,6 +6,7 @@ import { Personaje, PersonajeCreate, PersonajeUpdate } from "../types";
 import { CharacterForm } from "../components/CharacterForm";
 import { CharacterCard } from "../components/CharacterCard";
 import { Modal } from "../components/Modal";
+import { SectionWithAgent } from "../components/SectionWithAgent";
 
 export const CharactersPage = () => {
   const { proyectoActual } = useProject();
@@ -39,7 +40,11 @@ export const CharactersPage = () => {
 
   // Handle delete character
   const handleDeleteCharacter = async (id: string) => {
-    if (window.confirm("¿Estás seguro de que quieres borrar este personaje? Esto afectará a las tramas y escenas que lo referencian.")) {
+    if (
+      window.confirm(
+        "¿Estás seguro de que quieres borrar este personaje? Esta acción no se puede deshacer."
+      )
+    ) {
       await deletePersonaje(id);
     }
   };
@@ -63,95 +68,82 @@ export const CharactersPage = () => {
     setEditingPersonaje(null);
   };
 
-  // Prepare project data for form
-  const proyectoData = {
-    id: proyectoActual?.id || "",
-    estilo: proyectoActual?.estilo || "Realista",
-    tono_general: proyectoActual?.tono_general || "Melancólico",
-    contexto_historico: proyectoActual?.contexto_historico,
-    contexto_social: proyectoActual?.contexto_social,
-    contexto_geografico: proyectoActual?.contexto_geografico,
-  };
-
   return (
-    <div className="p-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800">Personajes</h1>
-            <p className="text-gray-600">
-              {personajes.length} personaje{personajes.length !== 1 ? "s" : ""} creado{personajes.length !== 1 ? "s" : ""}
-            </p>
-          </div>
-          <button
-            onClick={handleNewCharacter}
-            disabled={!proyectoActual}
-            className={`px-4 py-2 rounded-md text-white ${!proyectoActual ? "bg-blue-300 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}`}
-          >
-            + Nuevo Personaje
-          </button>
-        </div>
-
-        {/* Error message */}
-        {error && (
-          <div className="p-4 bg-red-50 text-red-600 rounded-md mb-4">
-            {error}
-          </div>
-        )}
-
-        {/* No project selected */}
-        {!proyectoActual && (
-          <div className="p-8 text-center text-gray-500 bg-white rounded-lg border border-gray-200">
-            <p>Selecciona un proyecto primero para crear personajes.</p>
-          </div>
-        )}
-
-        {/* Characters grid */}
-        {proyectoActual && (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-              {loading ? (
-                <div className="col-span-full flex items-center justify-center p-8">
-                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-                </div>
-              ) : personajes.length === 0 ? (
-                <div className="col-span-full text-center p-8 text-gray-500 bg-white rounded-lg border border-gray-200">
-                  <p>No hay personajes creados aún.</p>
-                  <p className="mt-2">Haz clic en "Nuevo Personaje" para empezar.</p>
-                </div>
-              ) : (
-                personajes.map((personaje) => (
-                  <CharacterCard
-                    key={personaje.id}
-                    personaje={personaje}
-                    onEdit={handleEditCharacter}
-                    onDelete={handleDeleteCharacter}
-                  />
-                ))
-              )}
+    <SectionWithAgent seccion="personajes">
+      <div className="p-4">
+        <div className="max-w-6xl mx-auto">
+          {/* Header */}
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800">Personajes</h1>
+              <p className="text-gray-600">
+                {personajes.length} personaje{personajes.length !== 1 ? "s" : ""} creado
+                {personajes.length !== 1 ? "s" : ""}
+              </p>
             </div>
-
-            {/* Modal for character form */}
-            <Modal
-              isOpen={isModalOpen}
-              onClose={handleModalClose}
-              title={editingPersonaje ? "Editar Personaje" : "Nuevo Personaje"}
-              size="xl"
+            <button
+              onClick={handleNewCharacter}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={!proyectoActual}
             >
+              + Nuevo Personaje
+            </button>
+          </div>
+
+          {/* Error message */}
+          {error && (
+            <div className="p-4 bg-red-50 text-red-600 rounded-md mb-4">
+              {error}
+            </div>
+          )}
+
+          {/* Characters grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            {loading ? (
+              <div className="col-span-full flex items-center justify-center p-8">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+              </div>
+            ) : personajes.length === 0 ? (
+              <div className="col-span-full text-center p-8 text-gray-500">
+                <p>No hay personajes creados aún.</p>
+                <p className="mt-2">
+                  Selecciona un proyecto y haz clic en "Nuevo Personaje" para empezar.
+                </p>
+              </div>
+            ) : (
+              personajes.map((personaje) => (
+                <CharacterCard
+                  key={personaje.id}
+                  personaje={personaje}
+                  onEdit={handleEditCharacter}
+                  onDelete={handleDeleteCharacter}
+                />
+              ))
+            )}
+          </div>
+
+          {/* Modal for character form */}
+          <Modal
+            isOpen={isModalOpen}
+            onClose={handleModalClose}
+            title={
+              editingPersonaje ? "Editar Personaje" : "Nuevo Personaje"
+            }
+            size="xl"
+          >
+            {proyectoActual && (
               <CharacterForm
                 personaje={editingPersonaje || null}
-                proyecto={proyectoData}
-                personajes={personajes}
+                proyectoId={proyectoActual.id}
                 onSubmit={handleSubmit}
                 onCancel={handleModalClose}
                 isLoading={loading}
               />
-            </Modal>
-          </>
-        )}
+            )}
+          </Modal>
+        </div>
       </div>
-    </div>
+    </SectionWithAgent>
   );
 };
 
