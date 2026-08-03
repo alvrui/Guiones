@@ -7,7 +7,7 @@ import { useCharacters } from "../hooks/useCharacters";
 import { Narrativa, NarrativaCreate, NarrativaUpdate, TipoEstructura, Estado } from "../types";
 import { Modal } from "../components/Modal";
 import { AIButton } from "../components/AIButton";
-
+import { SectionWithAgent } from "../components/SectionWithAgent";
 // NarrativeForm component
 const NarrativeForm = ({
   narrativa,
@@ -19,7 +19,7 @@ const NarrativeForm = ({
 }: {
   narrativa?: Narrativa | null;
   proyecto: { id: string; estilo: string; tono_general: string };
-  personajes: { id: string; nombre: string }[];
+  personajes: Array<{ id: string; nombre: string }>;
   onSubmit: (data: NarrativaCreate | NarrativaUpdate) => void;
   onCancel: () => void;
   isLoading: boolean;
@@ -28,77 +28,43 @@ const NarrativeForm = ({
     titulo: narrativa?.titulo || "",
     tipo_estructura: narrativa?.tipo_estructura || "Lineal",
     sinopsis: narrativa?.sinopsis || "",
-    temas_asociados: narrativa?.temas_asociados || [],
-    tono: narrativa?.tono || "",
+    temas_asociados: narrativa?.temas_asociados?.join(", ") || "",
+    tono: narrativa?.tono || proyecto.tono_general,
     personajes_involucrados: narrativa?.personajes_involucrados || [],
     conexiones_con_otras_narrativas: narrativa?.conexiones_con_otras_narrativas || "",
-    estado: narrativa?.estado || "Borrador",
+    estado: narrativa?.estado || "Idea",
   });
 
-  const [temasInput, setTemasInput] = useState(
-    narrativa?.temas_asociados?.join(", ") || ""
-  );
-
-  // Sync temas input
-  const handleTemasChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setTemasInput(value);
-    setFormData((prev) => ({
-      ...prev,
-      temas_asociados: value.split(",").map(t => t.trim()).filter(t => t),
-    }));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle character selection
-  const handlePersonajeToggle = (personajeId: string) => {
-    setFormData((prev) => {
-      const current = prev.personajes_involucrados || [];
-      if (current.includes(personajeId)) {
-        return {
-          ...prev,
-          personajes_involucrados: current.filter(id => id !== personajeId),
-        };
-      } else {
-        return {
-          ...prev,
-          personajes_involucrados: [...current, personajeId],
-        };
-      }
+  const handlePersonajesChange = (selectedIds: string[]) => {
+    setFormData((prev) => ({ ...prev, personajes_involucrados: selectedIds }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit({
+      ...formData,
+      temas_asociados: formData.temas_asociados
+        .split(",")
+        .map((t) => t.trim())
+        .filter((t) => t),
     });
   };
 
-  // Generate fields with AI
-  const handleGenerateField = (field: string, content: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: content,
-    }));
-  };
-
-  // Prepare context for AI
+  // Get AI context for narrative generation
   const getAIContext = () => ({
     titulo: formData.titulo,
     tipo_estructura: formData.tipo_estructura,
     estilo: proyecto.estilo,
     tono_general: proyecto.tono_general,
+    sinopsis: formData.sinopsis,
+    temas_asociados: formData.temas_asociados,
     personajes_involucrados: formData.personajes_involucrados,
-    ...formData,
   });
-
-  // Handle form change
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  // Handle submit
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit(formData);
-  };
 
   return (
     <SectionWithAgent seccion="narrativas">
@@ -109,208 +75,164 @@ const NarrativeForm = ({
         </h2>
 
         {/* Título */}
-        <div>
-          <div className="flex justify-between items-center mb-1">
-            <label htmlFor="titulo" className="block text-sm font-medium text-gray-700">
-              Título *
-            </label>
-            <AIButton
-              field="titulo"
-              section="narrative"
-              context={getAIContext()}
-              onGenerate={(content) => handleGenerateField("titulo", content)}
-            />
-          </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Título *
+          </label>
           <input
             type="text"
-            id="titulo"
             name="titulo"
             value={formData.titulo}
             onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded-md"
-            placeholder="Ej: La Búsqueda de la Verdad"
             required
           />
         </div>
 
-        {/* Tipo de Estructura */}
-        <div>
-          <label htmlFor="tipo_estructura" className="block text-sm font-medium text-gray-700 mb-1">
-            Tipo de Estructura *
-          </label>
-          <select
-            id="tipo_estructura"
-            name="tipo_estructura"
-            value={formData.tipo_estructura}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-md"
-          >
-            <option value="Lineal">Lineal</option>
-            <option value="Episódica">Episódica</option>
-            <option value="Temática">Temática</option>
-            <option value="Circular">Circular</option>
-            <option value="Asociativa">Asociativa</option>
-          </select>
+        {/* Tipo de Estructura y Estado */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Tipo de Estructura *
+            </label>
+            <select
+              name="tipo_estructura"
+              value={formData.tipo_estructura}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded-md"
+              required
+            >
+              <option value="Lineal">Lineal</option>
+              <option value="Episódica">Episódica</option>
+              <option value="Temática">Temática</option>
+              <option value="Circular">Circular</option>
+              <option value="Asociativa">Asociativa</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Estado
+            </label>
+            <select
+              name="estado"
+              value={formData.estado}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            >
+              <option value="Idea">Idea</option>
+              <option value="Borrador">Borrador</option>
+              <option value="En Desarrollo">En Desarrollo</option>
+              <option value="Completada">Completada</option>
+              <option value="Revisión">Revisión</option>
+              <option value="Finalizada">Finalizada</option>
+            </select>
+          </div>
         </div>
 
         {/* Sinopsis */}
-        <div>
+        <div className="mb-4">
           <div className="flex justify-between items-center mb-1">
-            <label htmlFor="sinopsis" className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-700">
               Sinopsis *
             </label>
             <AIButton
               field="sinopsis"
-              section="narrative"
+              seccion="narrativas"
               context={getAIContext()}
-              onGenerate={(content) => handleGenerateField("sinopsis", content)}
+              onGenerate={(content) => {
+                setFormData((prev) => ({ ...prev, sinopsis: prev.sinopsis + " " + content }));
+              }}
             />
           </div>
           <textarea
-            id="sinopsis"
             name="sinopsis"
             value={formData.sinopsis}
             onChange={handleChange}
             rows={4}
             className="w-full p-2 border border-gray-300 rounded-md"
-            placeholder="Resumen de la narrativa"
             required
           />
         </div>
 
         {/* Temas Asociados */}
-        <div>
-          <div className="flex justify-between items-center mb-1">
-            <label htmlFor="temas_asociados" className="block text-sm font-medium text-gray-700">
-              Temas Asociados
-            </label>
-            <AIButton
-              field="temas_asociados"
-              section="narrative"
-              context={getAIContext()}
-              onGenerate={(content) => {
-                const temas = content.split("\n").map(t => t.trim()).filter(t => t);
-                setFormData((prev) => ({
-                  ...prev,
-                  temas_asociados: temas,
-                }));
-                setTemasInput(temas.join(", "));
-              }}
-            />
-          </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Temas Asociados
+          </label>
           <input
             type="text"
-            id="temas_asociados"
-            value={temasInput}
-            onChange={handleTemasChange}
+            name="temas_asociados"
+            value={formData.temas_asociados}
+            onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded-md"
-            placeholder="Ej: Amor, Pérdida, Redención"
+            placeholder="Separa los temas con comas"
           />
         </div>
 
         {/* Tono */}
-        <div>
-          <div className="flex justify-between items-center mb-1">
-            <label htmlFor="tono" className="block text-sm font-medium text-gray-700">
-              Tono
-            </label>
-            <AIButton
-              field="tono"
-              section="narrative"
-              context={getAIContext()}
-              onGenerate={(content) => {
-                // Parse the response (format: "Tono: X\nJustificación: Y")
-                const tono = content.split("Tono: ")[1]?.split("\n")[0]?.trim() || "Drama";
-                handleGenerateField("tono", tono);
-              }}
-            />
-          </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Tono
+          </label>
           <select
-            id="tono"
             name="tono"
             value={formData.tono}
             onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded-md"
           >
-            <option value="">Seleccionar...</option>
-            <option value="Drama">Drama</option>
-            <option value="Comedia">Comedia</option>
-            <option value="Terror">Terror</option>
-            <option value="Aventura">Aventura</option>
-            <option value="Suspense">Suspense</option>
+            <option value="Oscuro">Oscuro</option>
+            <option value="Ligero">Ligero</option>
             <option value="Melancólico">Melancólico</option>
             <option value="Esperanzador">Esperanzador</option>
             <option value="Irónico">Irónico</option>
+            <option value="Suspense">Suspense</option>
+            <option value="Tenso">Tenso</option>
+            <option value="Cómico">Cómico</option>
           </select>
         </div>
 
         {/* Personajes Involucrados */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
             Personajes Involucrados
           </label>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-            {personajes.map((p) => (
+          <div className="space-y-2">
+            {personajes.map((personaje) => (
               <label
-                key={p.id}
-                className={`p-2 border rounded cursor-pointer transition-colors ${
-                  formData.personajes_involucrados?.includes(p.id)
-                    ? "bg-blue-50 border-blue-300"
-                    : "bg-white border-gray-300 hover:bg-gray-50"
-                }`}
+                key={personaje.id}
+                className="flex items-center gap-2 p-2 border border-gray-200 rounded hover:bg-gray-50 cursor-pointer"
               >
                 <input
                   type="checkbox"
-                  checked={formData.personajes_involucrados?.includes(p.id) || false}
-                  onChange={() => handlePersonajeToggle(p.id)}
-                  className="mr-2"
+                  checked={formData.personajes_involucrados.includes(personaje.id)}
+                  onChange={() => {
+                    const newIds = formData.personajes_involucrados.includes(personaje.id)
+                      ? formData.personajes_involucrados.filter((id) => id !== personaje.id)
+                      : [...formData.personajes_involucrados, personaje.id];
+                    handlePersonajesChange(newIds);
+                  }}
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded"
                 />
-                {p.nombre}
+                <span>{personaje.nombre}</span>
               </label>
             ))}
           </div>
         </div>
 
         {/* Conexiones con Otras Narrativas */}
-        <div>
-          <div className="flex justify-between items-center mb-1">
-            <label htmlFor="conexiones_con_otras_narrativas" className="block text-sm font-medium text-gray-700">
-              Conexiones con Otras Narrativas
-            </label>
-            <AIButton
-              field="conexiones"
-              section="narrative"
-              context={getAIContext()}
-              onGenerate={(content) => handleGenerateField("conexiones_con_otras_narrativas", content)}
-            />
-          </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Conexiones con Otras Narrativas
+          </label>
           <textarea
-            id="conexiones_con_otras_narrativas"
             name="conexiones_con_otras_narrativas"
             value={formData.conexiones_con_otras_narrativas}
             onChange={handleChange}
             rows={3}
             className="w-full p-2 border border-gray-300 rounded-md"
-            placeholder="Cómo esta narrativa se relaciona con otras"
+            placeholder="Describe cómo esta narrativa se conecta con otras"
           />
-        </div>
-
-        {/* Estado */}
-        <div>
-          <label htmlFor="estado" className="block text-sm font-medium text-gray-700 mb-1">
-            Estado
-          </label>
-          <select
-            id="estado"
-            name="estado"
-            value={formData.estado}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-md"
-          >
-            <option value="Borrador">Borrador</option>
-            <option value="En Desarrollo">En Desarrollo</option>
-            <option value="Completada">Completada</option>
-          </select>
         </div>
 
         {/* Form Actions */}
@@ -318,7 +240,11 @@ const NarrativeForm = ({
           <button
             type="submit"
             disabled={isLoading}
-            className={`px-4 py-2 rounded-md text-white ${isLoading ? "bg-blue-300 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}`}
+            className={`px-4 py-2 rounded-md text-white ${
+              isLoading
+                ? "bg-blue-300 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700"
+            }`}
           >
             {isLoading ? "Guardando..." : narrativa ? "Actualizar Narrativa" : "Crear Narrativa"}
           </button>
@@ -339,33 +265,54 @@ const NarrativeForm = ({
 // NarrativeCard component
 const NarrativeCard = ({
   narrativa,
+  personajes,
   onEdit,
   onDelete,
 }: {
   narrativa: Narrativa;
+  personajes: Array<{ id: string; nombre: string }>;
   onEdit: (narrativa: Narrativa) => void;
   onDelete: (id: string) => void;
 }) => {
   return (
-    <div className="bg-white p-4 rounded-lg shadow border border-gray-200">
-      <div className="flex justify-between items-start mb-3">
+    <div className="p-4 border border-gray-200 rounded-lg bg-white hover:shadow-md transition-shadow">
+      <div className="flex justify-between items-start">
         <div className="flex-1">
-          <h3 className="text-lg font-bold text-gray-800">{narrativa.titulo}</h3>
-          <div className="flex gap-2 mt-1">
-            <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-lg">📜</span>
+            <h3 className="text-lg font-bold text-gray-800">{narrativa.titulo}</h3>
+          </div>
+          <div className="flex gap-2 mb-2">
+            <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
               {narrativa.tipo_estructura}
             </span>
-            {narrativa.tono && (
-              <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                {narrativa.tono}
-              </span>
-            )}
-            {narrativa.estado && (
-              <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                {narrativa.estado}
-              </span>
-            )}
+            <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
+              {narrativa.estado || "Idea"}
+            </span>
           </div>
+          <p className="text-sm text-gray-600">
+            {narrativa.sinopsis.length > 100
+              ? `${narrativa.sinopsis.substring(0, 100)}...`
+              : narrativa.sinopsis}
+          </p>
+          {narrativa.personajes_involucrados && narrativa.personajes_involucrados.length > 0 && (
+            <div className="mt-2">
+              <p className="text-xs text-gray-500 mb-1">Personajes:</p>
+              <div className="flex flex-wrap gap-1">
+                {narrativa.personajes_involucrados.map((id) => {
+                  const personaje = personajes.find((p) => p.id === id);
+                  return personaje ? (
+                    <span
+                      key={id}
+                      className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded"
+                    >
+                      {personaje.nombre}
+                    </span>
+                  ) : null;
+                })}
+              </div>
+            </div>
+          )}
         </div>
         <div className="flex gap-2">
           <button
@@ -384,43 +331,6 @@ const NarrativeCard = ({
           </button>
         </div>
       </div>
-
-      <div className="space-y-2">
-        <p className="text-sm text-gray-600">
-          <strong>Sinopsis:</strong>
-        </p>
-        <p className="text-sm text-gray-800">
-          {narrativa.sinopsis.length > 150
-            ? `${narrativa.sinopsis.substring(0, 150)}...`
-            : narrativa.sinopsis}
-        </p>
-
-        {narrativa.temas_asociados && narrativa.temas_asociados.length > 0 && (
-          <div className="pt-2 border-t border-gray-100">
-            <p className="text-sm text-gray-600">
-              <strong>Temas:</strong>
-            </p>
-            <div className="flex flex-wrap gap-1 mt-1">
-              {narrativa.temas_asociados.map((tema) => (
-                <span
-                  key={tema}
-                  className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded"
-                >
-                  {tema}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {narrativa.personajes_involucrados && narrativa.personajes_involucrados.length > 0 && (
-          <div className="pt-2 border-t border-gray-100">
-            <p className="text-sm text-gray-600">
-              <strong>Personajes:</strong> {narrativa.personajes_involucrados.length}
-            </p>
-          </div>
-        )}
-      </div>
     </div>
   );
 };
@@ -435,17 +345,11 @@ export const NarrativesPage = () => {
     updateNarrativa,
     deleteNarrativa,
   } = useNarratives(proyectoActual?.id || null);
-  
+
   const { personajes } = useCharacters(proyectoActual?.id || null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingNarrativa, setEditingNarrativa] = useState<Narrativa | null>(null);
-
-  // Prepare personajes for form
-  const personajesForForm = personajes.map(p => ({
-    id: p.id,
-    nombre: p.nombre,
-  }));
 
   // Handle new narrative
   const handleNewNarrative = () => {
@@ -465,7 +369,11 @@ export const NarrativesPage = () => {
 
   // Handle delete narrative
   const handleDeleteNarrative = async (id: string) => {
-    if (window.confirm("¿Estás seguro de que quieres borrar esta narrativa?")) {
+    if (
+      window.confirm(
+        "¿Estás seguro de que quieres borrar esta narrativa? Esta acción no se puede deshacer."
+      )
+    ) {
       await deleteNarrativa(id);
     }
   };
@@ -489,92 +397,86 @@ export const NarrativesPage = () => {
     setEditingNarrativa(null);
   };
 
-  // Prepare project data for form
-  const proyectoData = {
-    id: proyectoActual?.id || "",
-    estilo: proyectoActual?.estilo || "Realista",
-    tono_general: proyectoActual?.tono_general || "Melancólico",
-  };
-
   return (
-    <div className="p-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800">Narrativas</h1>
-            <p className="text-gray-600">
-              {narrativas.length} narrativa{narrativas.length !== 1 ? "s" : ""} creada{narrativas.length !== 1 ? "s" : ""}
-            </p>
-          </div>
-          <button
-            onClick={handleNewNarrative}
-            disabled={!proyectoActual}
-            className={`px-4 py-2 rounded-md text-white ${!proyectoActual ? "bg-blue-300 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}`}
-          >
-            + Nueva Narrativa
-          </button>
-        </div>
-
-        {/* Error message */}
-        {error && (
-          <div className="p-4 bg-red-50 text-red-600 rounded-md mb-4">
-            {error}
-          </div>
-        )}
-
-        {/* No project selected */}
-        {!proyectoActual && (
-          <div className="p-8 text-center text-gray-500 bg-white rounded-lg border border-gray-200">
-            <p>Selecciona un proyecto primero para crear narrativas.</p>
-          </div>
-        )}
-
-        {/* Narratives grid */}
-        {proyectoActual && (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-              {loading ? (
-                <div className="col-span-full flex items-center justify-center p-8">
-                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-                </div>
-              ) : narrativas.length === 0 ? (
-                <div className="col-span-full text-center p-8 text-gray-500 bg-white rounded-lg border border-gray-200">
-                  <p>No hay narrativas creadas aún.</p>
-                  <p className="mt-2">Haz clic en "Nueva Narrativa" para empezar.</p>
-                </div>
-              ) : (
-                narrativas.map((narrativa) => (
-                  <NarrativeCard
-                    key={narrativa.id}
-                    narrativa={narrativa}
-                    onEdit={handleEditNarrative}
-                    onDelete={handleDeleteNarrative}
-                  />
-                ))
-              )}
+    <SectionWithAgent seccion="narrativas">
+      <div className="p-4">
+        <div className="max-w-6xl mx-auto">
+          {/* Header */}
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800">Narrativas</h1>
+              <p className="text-gray-600">
+                {narrativas.length} narrativa{narrativas.length !== 1 ? "s" : ""} creada
+                {narrativas.length !== 1 ? "s" : ""}
+              </p>
             </div>
-
-            {/* Modal for narrative form */}
-            <Modal
-              isOpen={isModalOpen}
-              onClose={handleModalClose}
-              title={editingNarrativa ? "Editar Narrativa" : "Nueva Narrativa"}
-              size="xl"
+            <button
+              onClick={handleNewNarrative}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={!proyectoActual}
             >
+              + Nueva Narrativa
+            </button>
+          </div>
+
+          {/* Error message */}
+          {error && (
+            <div className="p-4 bg-red-50 text-red-600 rounded-md mb-4">
+              {error}
+            </div>
+          )}
+
+          {/* Narratives grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            {loading ? (
+              <div className="col-span-full flex items-center justify-center p-8">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+              </div>
+            ) : narrativas.length === 0 ? (
+              <div className="col-span-full text-center p-8 text-gray-500">
+                <p>No hay narrativas creadas aún.</p>
+                <p className="mt-2">
+                  Selecciona un proyecto y haz clic en "Nueva Narrativa" para empezar.
+                </p>
+              </div>
+            ) : (
+              narrativas.map((narrativa) => (
+                <NarrativeCard
+                  key={narrativa.id}
+                  narrativa={narrativa}
+                  personajes={personajes}
+                  onEdit={handleEditNarrative}
+                  onDelete={handleDeleteNarrative}
+                />
+              ))
+            )}
+          </div>
+
+          {/* Modal for narrative form */}
+          <Modal
+            isOpen={isModalOpen}
+            onClose={handleModalClose}
+            title={editingNarrativa ? "Editar Narrativa" : "Nueva Narrativa"}
+            size="xl"
+          >
+            {proyectoActual && (
               <NarrativeForm
                 narrativa={editingNarrativa || null}
-                proyecto={proyectoData}
-                personajes={personajesForForm}
+                proyecto={{
+                  id: proyectoActual.id,
+                  estilo: proyectoActual.estilo,
+                  tono_general: proyectoActual.tono_general,
+                }}
+                personajes={personajes}
                 onSubmit={handleSubmit}
                 onCancel={handleModalClose}
                 isLoading={loading}
               />
-            </Modal>
-          </>
-        )}
+            )}
+          </Modal>
+        </div>
       </div>
-    </div>
+    </SectionWithAgent>
   );
 };
 

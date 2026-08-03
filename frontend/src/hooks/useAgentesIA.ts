@@ -94,7 +94,7 @@ export const useAgentesIA = () => {
   // Load agents on mount
   useEffect(() => {
     fetchAgentes();
-  }, [fetchAgentes]);
+  }, []);
 
   return {
     agentes,
