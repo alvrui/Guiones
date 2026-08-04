@@ -20,50 +20,50 @@ const DEFAULT_CATALOG: StoryElement[] = [
   },
   {
     id: "se-002",
-    name: "Revelaci\u00f3n",
-    description: "Momento en que se revela informaci\u00f3n crucial",
+    name: "Revelación",
+    description: "Momento en que se revela información crucial",
     category: "Estructura",
-    type: "Revelaci\u00f3n",
+    type: "Revelación",
     tags: ["clave", "sorpresa"],
   },
   {
     id: "se-003",
-    name: "Cl\u00edmax",
-    description: "El punto de mayor tensi\u00f3n en la historia",
+    name: "Clímax",
+    description: "El punto de mayor tensión en la historia",
     category: "Estructura",
-    type: "Cl\u00edmax",
-    tags: ["tensi\u00f3n", "cumulativo"],
+    type: "Clímax",
+    tags: ["tensión", "cumulativo"],
   },
   {
     id: "se-004",
     name: "Giro Argumental",
-    description: "Cambio inesperado en la direcci\u00f3n de la historia",
+    description: "Cambio inesperado en la dirección de la historia",
     category: "Estructura",
     type: "Giro Argumental",
     tags: ["sorpresa", "cambio"],
   },
   {
     id: "se-005",
-    name: "Exposici\u00f3n",
-    description: "Presentaci\u00f3n del contexto y personajes",
+    name: "Exposición",
+    description: "Presentación del contexto y personajes",
     category: "Estructura",
-    type: "Exposici\u00f3n",
+    type: "Exposición",
     tags: ["inicio", "contexto"],
   },
   {
     id: "se-006",
     name: "Desarrollo",
-    description: "Desarrollo de la trama y evoluci\u00f3n de personajes",
+    description: "Desarrollo de la trama y evolución de personajes",
     category: "Estructura",
     type: "Desarrollo",
-    tags: ["progreso", "evoluci\u00f3n"],
+    tags: ["progreso", "evolución"],
   },
   {
     id: "se-007",
-    name: "Resoluci\u00f3n",
-    description: "Resoluci\u00f3n del conflicto central",
+    name: "Resolución",
+    description: "Resolución del conflicto central",
     category: "Estructura",
-    type: "Resoluci\u00f3n",
+    type: "Resolución",
     tags: ["final", "cierre"],
   },
 ];
@@ -213,7 +213,12 @@ const loadStoryElementsFromCSV = async (): Promise<StoryElement[]> => {
 // Function to load from API (if available)
 const loadStoryElementsFromAPI = async (): Promise<StoryElement[]> => {
   try {
-    const response = await fetch('/api/story-elements');
+    // Use the same base URL logic as api.ts
+    const baseURL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+      ? "/api"
+      : `http://${window.location.hostname}:8002/api`;
+    
+    const response = await fetch(`${baseURL}/story-elements`);
     if (response.ok) {
       const data = await response.json();
       return data.elements || DEFAULT_CATALOG;
@@ -316,7 +321,7 @@ export const useStoryElements = (): UseStoryElementsReturn => {
         }
 
       } catch (err) {
-        setError("Error al cargar el cat\u00e1logo de Story Elements");
+        setError("Error al cargar el catálogo de Story Elements");
         console.error("Error loading story elements:", err);
         
         // Fallback to default catalog
@@ -480,7 +485,7 @@ export const useStoryElements = (): UseStoryElementsReturn => {
         lastUpdated: new Date().toISOString(),
       });
     } catch (err) {
-      setError("Error al refrescar el cat\u00e1logo");
+      setError("Error al refrescar el catálogo");
       console.error("Error refreshing catalog:", err);
     } finally {
       setLoading(false);

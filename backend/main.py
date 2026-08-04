@@ -19,6 +19,7 @@ from .routers import (
     narrativas,
     tramas,
     estructura,
+    story_elements,
 )
 from .routers import (
     ai_unified,
@@ -72,6 +73,9 @@ app.include_router(documentos.router, prefix="/api", tags=["documentos"])
 
 # AgenteIA routes
 app.include_router(agentes_ia.router, prefix="/api/agentes-ia", tags=["agentes_ia"])
+
+# Story Elements routes
+app.include_router(story_elements.router, prefix="/api", tags=["story_elements"])
 
 # AI Unified routes
 app.include_router(ai_unified.router, prefix="/api/ai", tags=["IA"])
