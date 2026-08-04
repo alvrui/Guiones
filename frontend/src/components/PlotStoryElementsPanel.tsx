@@ -162,4 +162,3 @@ export const PlotStoryElementsPanel = ({
   );
 };
 
-export default PlotStoryElementsPanel;

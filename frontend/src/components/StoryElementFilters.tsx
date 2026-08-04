@@ -371,4 +371,3 @@ export const StoryElementFilters = ({
   );
 };
 
-export default StoryElementFilters;

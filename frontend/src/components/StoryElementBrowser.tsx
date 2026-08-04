@@ -184,4 +184,3 @@ export const StoryElementBrowser = ({
   );
 };
 
-export default StoryElementBrowser;

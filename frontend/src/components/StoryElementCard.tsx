@@ -128,4 +128,3 @@ export const StoryElementCard = ({
   );
 };
 
-export default StoryElementCard;

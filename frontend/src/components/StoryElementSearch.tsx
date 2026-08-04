@@ -93,4 +93,3 @@ export const StoryElementSearch = ({
   );
 };
 
-export default StoryElementSearch;
