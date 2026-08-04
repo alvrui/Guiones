@@ -68,13 +68,38 @@ const DEFAULT_CATALOG: StoryElement[] = [
   },
 ];
 
-// CSV parsing utility
+// Helper function to parse a CSV line handling quoted fields
+const parseCSVLine = (line: string): string[] => {
+  const result: string[] = [];
+  let current = '';
+  let inQuotes = false;
+  
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    
+    if (char === '"') {
+      inQuotes = !inQuotes;
+    } else if (char === ',' && !inQuotes) {
+      result.push(current);
+      current = '';
+    } else {
+      current += char;
+    }
+  }
+  
+  // Add the last field
+  result.push(current);
+  
+  return result.map(v => v.trim());
+};
+
+// CSV parsing utility - handles the specific Story Elements CSV format
 const parseCSVToStoryElements = (csvContent: string): StoryElement[] => {
   const lines = csvContent.split('\n');
   if (lines.length < 2) return [];
 
   // Get headers from first line
-  const headers = lines[0].split(',').map(h => h.trim());
+  const headers = parseCSVLine(lines[0]);
   
   const elements: StoryElement[] = [];
   
@@ -83,37 +108,85 @@ const parseCSVToStoryElements = (csvContent: string): StoryElement[] => {
     const line = lines[i].trim();
     if (!line) continue;
 
-    const values = line.split(',').map(v => v.trim());
+    // Use a proper CSV parser to handle quoted fields with commas
+    const values = parseCSVLine(line);
+    
+    if (values.length === 0) continue;
+
     const element: StoryElement = {
-      id: `se-${i}-${Date.now()}`,
+      id: values[0] || `se-${i}`,
     };
 
-    // Map CSV columns to StoryElement fields
+    // Map specific CSV columns to StoryElement fields
+    // Based on the actual CSV format: id,english_name,spanish_name,category,subtype,role_in_story,...
     for (let j = 0; j < Math.min(headers.length, values.length); j++) {
       const header = headers[j].toLowerCase();
       const value = values[j];
 
-      if (header.includes('name') || header.includes('nombre')) {
-        element.name = value;
-      } else if (header.includes('description') || header.includes('descripci\u00f3n')) {
-        element.description = value;
-      } else if (header.includes('category') || header.includes('categor\u00eda')) {
-        element.category = value;
-      } else if (header.includes('type') || header.includes('tipo')) {
-        element.type = value;
-      } else if (header.includes('tags') || header.includes('etiquetas')) {
-        element.tags = value.split(';').map(t => t.trim()).filter(t => t);
-      } else if (header.includes('archetype') || header.includes('arquetipo')) {
-        element.archetype = value;
-      } else if (header.includes('example') || header.includes('ejemplo')) {
-        element.example = value;
-      } else if (header.includes('notes') || header.includes('notas')) {
-        element.notes = value;
+      if (!value) continue;
+
+      switch (header) {
+        case 'id':
+          element.id = value;
+          break;
+        case 'english_name':
+          element.name = value;
+          break;
+        case 'spanish_name':
+          // Use spanish_name as the primary name for Spanish UI
+          element.name = value;
+          break;
+        case 'category':
+          element.category = value;
+          break;
+        case 'subtype':
+          element.type = value;
+          break;
+        case 'role_in_story':
+          // Could be used as archetype or type
+          if (!element.type) element.type = value;
+          if (!element.archetype) element.archetype = value;
+          break;
+        case 'dramatic_function':
+          element.description = value;
+          break;
+        case 'logline_usage':
+          // Additional description
+          if (element.description) {
+            element.description += ` ${value}`;
+          } else {
+            element.description = value;
+          }
+          break;
+        case 'tags_engine':
+          element.tags = value.split(';').map(t => t.trim()).filter(t => t);
+          break;
+        case 'primary_genres':
+        case 'secondary_genres':
+        case 'tone_seriousness':
+        case 'tone_darkness':
+        case 'tone_stylization':
+        case 'emotional_core':
+        case 'moral_axis':
+          // Add as tags
+          if (!element.tags) element.tags = [];
+          element.tags.push(value.toLowerCase().replace(/_/g, ' '));
+          break;
+        default:
+          // For any other field, try to match by partial name
+          if (header.includes('name') || header.includes('nombre')) {
+            element.name = value;
+          } else if (header.includes('description') || header.includes('descripci\u00f3n')) {
+            element.description = value;
+          } else if (header.includes('archetype') || header.includes('arquetipo')) {
+            element.archetype = value;
+          }
+          break;
       }
     }
 
-    // Only add if it has at least a name
-    if (element.name) {
+    // Only add if it has at least a name and id
+    if (element.id && element.name) {
       elements.push(element);
     }
   }
@@ -206,6 +279,15 @@ export const useStoryElements = (): UseStoryElementsReturn => {
           elements = await loadStoryElementsFromCSV();
         }
         
+        // If we got elements but they look like the default, try CSV again
+        // This handles the case where API returns empty array
+        if (elements.length <= DEFAULT_CATALOG.length) {
+          const csvElements = await loadStoryElementsFromCSV();
+          if (csvElements.length > elements.length) {
+            elements = csvElements;
+          }
+        }
+
         // Extract metadata
         const categories = [...new Set(elements.map(e => e.category).filter(Boolean))];
         const types = [...new Set(elements.map(e => e.type).filter(Boolean))];
