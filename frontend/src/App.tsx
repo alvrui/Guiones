@@ -5,6 +5,7 @@ import { ProjectPage } from "./pages/ProjectPage";
 import { CharactersPage } from "./pages/CharactersPage";
 import { NarrativesPage } from "./pages/NarrativesPage";
 import { PlotsPage } from "./pages/PlotsPage";
+import { PlotsPageNew } from "./pages/PlotsPageNew";
 import { StructurePage } from "./pages/StructurePage";
 import { GraphPage } from "./pages/GraphPage";
 import { AgentesPage, AgenteSelector } from "./pages/AgentesPage";
@@ -171,7 +172,7 @@ const MainContent = () => {
         <Route path="/agentes" element={<AgentesPage />} />
         <Route path="/personajes" element={<CharactersPage />} />
         <Route path="/narrativas" element={<NarrativesPage />} />
-        <Route path="/tramas" element={<PlotsPage />} />
+        <Route path="/tramas" element={<PlotsPageNew />} />
         <Route path="/estructura" element={<StructurePage />} />
         <Route path="/grafo" element={<GraphPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
