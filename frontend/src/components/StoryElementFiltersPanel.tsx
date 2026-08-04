@@ -1,8 +1,8 @@
-// StoryElementFilters component - filter controls for story elements catalog
+// StoryElementFiltersPanel component - filter controls for story elements catalog
 import { useCallback } from "react";
 import { StoryElementFilters, StoryElementSortBy } from "../types/storyElements";
 
-interface StoryElementFiltersProps {
+interface StoryElementFiltersPanelProps {
   filters: StoryElementFilters;
   sortBy: StoryElementSortBy;
   categories: string[];
@@ -17,7 +17,7 @@ interface StoryElementFiltersProps {
   className?: string;
 }
 
-export const StoryElementFilters = ({
+export const StoryElementFiltersPanel = ({
   filters,
   sortBy,
   categories,
@@ -30,7 +30,7 @@ export const StoryElementFilters = ({
   onSortChange,
   onReset,
   className = "",
-}: StoryElementFiltersProps) => {
+}: StoryElementFiltersPanelProps) => {
   // Handle search query change
   const handleSearchChange = useCallback((
     e: React.ChangeEvent<HTMLInputElement>

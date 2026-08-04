@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 import { StoryElement, PlotStoryElementSelection } from "../types/storyElements";
 import { StoryElementCard } from "./StoryElementCard";
 import { StoryElementSearch } from "./StoryElementSearch";
-import { StoryElementFilters } from "./StoryElementFilters";
+import { StoryElementFiltersPanel } from "./StoryElementFiltersPanel";
 import { useStoryElements } from "../hooks/useStoryElements";
 
 interface StoryElementBrowserProps {
@@ -129,7 +129,7 @@ export const StoryElementBrowser = ({
       <div className="flex flex-1 gap-4 overflow-hidden">
         {/* Filters sidebar */}
         <div className="w-64 flex-shrink-0 overflow-y-auto">
-          <StoryElementFilters
+          <StoryElementFiltersPanel
             filters={filters}
             sortBy={sortBy}
             categories={getUniqueCategories()}
