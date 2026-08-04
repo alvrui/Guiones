@@ -408,10 +408,10 @@ export const useStoryElements = (): UseStoryElementsReturn => {
         result.sort((a, b) => b.name.localeCompare(a.name));
         break;
       case "category-asc":
-        result.sort((a, b) => (a.category || "").localeCompare(b.category || "")));
+        result.sort((a, b) => (a.category || "").localeCompare(b.category || ""));
         break;
       case "type-asc":
-        result.sort((a, b) => (a.type || "").localeCompare(b.type || "")));
+        result.sort((a, b) => (a.type || "").localeCompare(b.type || ""));
         break;
       case "last-used":
         result.sort((a, b) => {
