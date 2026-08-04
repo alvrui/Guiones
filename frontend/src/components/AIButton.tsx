@@ -1,13 +1,14 @@
 // AIButton component for generating content with AI agents
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useCallback } from "react";
 import { AgenteIA } from "../types";
 import { agenteIAAPI } from "../services/api";
+import { useAgenteContext } from "../contexts/AgenteContext";
+import { useAgentesIA } from "../hooks/useAgentesIA";
 
 interface AIButtonProps {
   field: string;
   seccion: string;
   context: Record<string, any>;
-  agenteSeleccionadoId?: string;
   documentos?: any[];
   onGenerate: (content: string) => void;
   className?: string;
@@ -27,16 +28,23 @@ export const AIButton = ({
   field,
   seccion,
   context,
-  agenteSeleccionadoId,
   documentos = [],
   onGenerate,
   className = "",
   disabled = false,
 }: AIButtonProps) => {
+  const { getAgenteSeleccionado } = useAgenteContext();
+  const { agentes } = useAgentesIA();
+  const agenteSeleccionadoId = getAgenteSeleccionado(seccion);
+  
+  // Get the selected agent details
+  const agenteSeleccionado = agentes.find(a => a.id === agenteSeleccionadoId);
+  
   const [isLoading, setIsLoading] = useState(false);
   const [conversation, setConversation] = useState<ConversationMessage[]>([]);
   const [localError, setLocalError] = useState<string | null>(null);
   const [showConversation, setShowConversation] = useState(false);
+  const [customPrompt, setCustomPrompt] = useState("");
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   // Prepare enhanced context with documents
@@ -48,7 +56,7 @@ export const AIButton = ({
       baseContext.documentos = documentos.map(doc => ({
         nombre: doc.nombre,
         tipo: doc.tipo,
-        contenido: doc.contenido.length > 2000 
+        contenido: doc.contenido?.length > 2000 
           ? `${doc.contenido.substring(0, 2000)}...` 
           : doc.contenido
       }));
@@ -61,8 +69,20 @@ export const AIButton = ({
     return baseContext;
   }, [context, documentos, field, seccion]);
 
+  // Build the final prompt to send to AI
+  const buildFinalPrompt = useCallback((customPrompt?: string) => {
+    const basePrompt = customPrompt || `Genera contenido para el campo '${field}'`;
+    
+    // If we have agent system prompt, include it
+    if (agenteSeleccionado?.prompt_sistema) {
+      return `${agenteSeleccionado.prompt_sistema}\n\n${basePrompt}`;
+    }
+    
+    return basePrompt;
+  }, [field, agenteSeleccionado]);
+
   // Generate content with AI
-  const handleGenerate = useCallback(async () => {
+  const handleGenerate = useCallback(async (useCustomPrompt?: boolean) => {
     if (disabled || isLoading) return;
 
     setIsLoading(true);
@@ -70,23 +90,28 @@ export const AIButton = ({
 
     try {
       const enhancedContext = getEnhancedContext();
+      const finalPrompt = buildFinalPrompt(useCustomPrompt ? customPrompt : undefined);
       
       // Add user message to conversation
       const userMessage: ConversationMessage = {
         id: `user-${Date.now()}`,
         role: "user",
-        content: `Generar ${field}`,
+        content: finalPrompt,
         timestamp: new Date(),
       };
       setConversation((prev) => [...prev, userMessage]);
       setShowConversation(true);
+      
+      if (useCustomPrompt) {
+        setCustomPrompt("");
+      }
 
-      // Call the API
+      // Call the unified AI endpoint
       const response = await agenteIAAPI.generate({
         field,
         seccion,
         context: enhancedContext,
-        agent_id: agenteSeleccionadoId,
+        agent_id: agenteSeleccionadoId || undefined,
       });
 
       const content = response.content;
@@ -109,7 +134,7 @@ export const AIButton = ({
     } finally {
       setIsLoading(false);
     }
-  }, [disabled, isLoading, field, seccion, getEnhancedContext, agenteSeleccionadoId]);
+  }, [disabled, isLoading, field, seccion, getEnhancedContext, agenteSeleccionadoId, buildFinalPrompt, customPrompt]);
 
   // Handle accept - append to field
   const handleAccept = useCallback((messageId: string) => {
@@ -143,9 +168,9 @@ export const AIButton = ({
   }, []);
 
   // Show tooltip with agent info
-  const tooltipText = agenteSeleccionadoId
-    ? `Generar con IA (Agente seleccionado)`
-    : `Generar ${field} con IA`;
+  const tooltipText = agenteSeleccionado
+    ? `Generar ${field} con IA (${agenteSeleccionado.nombre})`
+    : `Generar ${field} con IA (sin agente seleccionado)`;
 
   // Count unread messages
   const unreadCount = conversation.filter(
@@ -156,7 +181,7 @@ export const AIButton = ({
     <div className={`flex flex-col items-start gap-2 ${className}`}>
       <button
         ref={buttonRef}
-        onClick={handleGenerate}
+        onClick={() => handleGenerate()}
         disabled={disabled || isLoading}
         className={`p-1 rounded text-xl hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${
           isLoading ? "animate-pulse" : ""
@@ -164,7 +189,7 @@ export const AIButton = ({
         title={tooltipText}
         aria-label={tooltipText}
       >
-        {isLoading ? "⏳" : "🤖"}
+        {isLoading ? "\u23f3" : "\ud83e\udd16"}
         {unreadCount > 0 && (
           <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
             {unreadCount}
@@ -176,23 +201,51 @@ export const AIButton = ({
       {showConversation && (
         <div className="mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg">
           <div className="p-3 border-b border-gray-200 flex justify-between items-center">
-            <h4 className="font-medium text-sm text-gray-700">
-              Conversación con IA
-            </h4>
+            <div>
+              <h4 className="font-medium text-sm text-gray-700">
+                Conversaci\u00f3n con IA
+              </h4>
+              {agenteSeleccionado && (
+                <p className="text-xs text-gray-500">
+                  Agente: {agenteSeleccionado.nombre} ({agenteSeleccionado.modelo_mistral})
+                </p>
+              )}
+            </div>
             <div className="flex gap-2">
               <button
                 onClick={clearConversation}
                 className="text-xs text-gray-500 hover:text-gray-700"
-                title="Limpiar conversación"
+                title="Limpiar conversaci\u00f3n"
               >
-                🗑️
+                \ud83d\uddd1\ufe0f
               </button>
               <button
                 onClick={toggleConversation}
                 className="text-xs text-gray-500 hover:text-gray-700"
                 title="Cerrar"
               >
-                ✕
+                \u2715
+              </button>
+            </div>
+          </div>
+          
+          {/* Custom prompt input */}
+          <div className="p-3 border-b border-gray-100">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={customPrompt}
+                onChange={(e) => setCustomPrompt(e.target.value)}
+                placeholder={`Escribe una petici\u00f3n espec\u00edfica para ${field}...`}
+                className="flex-1 p-2 border border-gray-300 rounded text-sm"
+              />
+              <button
+                onClick={() => handleGenerate(true)}
+                disabled={isLoading || !customPrompt.trim()}
+                className="px-3 py-2 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 disabled:opacity-50"
+                title="Enviar petici\u00f3n personalizada"
+              >
+                \u27a4
               </button>
             </div>
           </div>
@@ -200,7 +253,7 @@ export const AIButton = ({
           <div className="p-3 max-h-80 overflow-y-auto">
             {conversation.length === 0 ? (
               <p className="text-sm text-gray-500 text-center">
-                No hay mensajes aún. Haz clic en 🤖 para generar contenido.
+                No hay mensajes a\u00fan. Haz clic en \ud83e\udd16 para generar contenido.
               </p>
             ) : (
               conversation.map((message) => (
@@ -216,7 +269,7 @@ export const AIButton = ({
                     <span className={`text-xs font-medium ${
                       message.role === "user" ? "text-gray-600" : "text-blue-600"
                     }`}>
-                      {message.role === "user" ? "Tú" : "Asistente IA"}
+                      {message.role === "user" ? "T\u00fa" : "Asistente IA"}
                     </span>
                     <span className="text-xs text-gray-400">
                       {message.timestamp.toLocaleTimeString()}
@@ -231,21 +284,21 @@ export const AIButton = ({
                         onClick={() => handleAccept(message.id)}
                         className="px-3 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600 transition-colors"
                       >
-                        ✅ Añadir
+                        \u2705 Validar y Aplicar
                       </button>
                       <button
                         onClick={() => handleReject(message.id)}
                         className="px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition-colors"
                       >
-                        ❌ Rechazar
+                        \u274c Rechazar
                       </button>
                     </div>
                   )}
                   {message.role === "assistant" && message.accepted === true && (
-                    <p className="text-xs text-green-600 mt-1">✓ Añadido al campo</p>
+                    <p className="text-xs text-green-600 mt-1">\u2713 Contenido validado y aplicado</p>
                   )}
                   {message.role === "assistant" && message.accepted === false && (
-                    <p className="text-xs text-red-600 mt-1">✗ Rechazado</p>
+                    <p className="text-xs text-red-600 mt-1">\u2717 Contenido rechazado</p>
                   )}
                 </div>
               ))
@@ -267,7 +320,7 @@ export const AIButton = ({
           onClick={toggleConversation}
           className="mt-1 px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded hover:bg-gray-200 transition-colors"
         >
-          💬 Ver conversación ({conversation.length})
+          \ud83d\udcac Ver conversaci\u00f3n ({conversation.length})
         </button>
       )}
     </div>

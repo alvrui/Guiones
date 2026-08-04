@@ -740,4 +740,19 @@ export const agenteIAAPI = {
       handleError(error as AxiosError);
     }
   },
+
+  // Generate content using AI agent
+  generate: async (data: {
+    field: string;
+    seccion: string;
+    context: Record<string, any>;
+    agent_id?: string;
+  }): Promise<AIResponse> => {
+    try {
+      const response = await api.post<AIResponse>("/ai/generate", data);
+      return response.data;
+    } catch (error) {
+      handleError(error as AxiosError);
+    }
+  },
 };
