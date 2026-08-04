@@ -214,8 +214,9 @@ const loadStoryElementsFromCSV = async (): Promise<StoryElement[]> => {
 const loadStoryElementsFromAPI = async (): Promise<StoryElement[]> => {
   try {
     // Use the same base URL logic as api.ts
+    // In development, backend is on port 8002
     const baseURL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-      ? "/api"
+      ? "http://localhost:8002/api"
       : `http://${window.location.hostname}:8002/api`;
     
     const response = await fetch(`${baseURL}/story-elements`);
@@ -276,20 +277,17 @@ export const useStoryElements = (): UseStoryElementsReturn => {
       setError(null);
 
       try {
-        // Try API first, then CSV, then fallback to default
+        // Try CSV first (should work in development), then API, then fallback to default
         let elements: StoryElement[] = [];
         
-        elements = await loadStoryElementsFromAPI();
-        if (elements.length === 0) {
-          elements = await loadStoryElementsFromCSV();
-        }
+        // First try CSV from public folder
+        elements = await loadStoryElementsFromCSV();
         
-        // If we got elements but they look like the default, try CSV again
-        // This handles the case where API returns empty array
+        // If CSV didn't work or returned few elements, try API
         if (elements.length <= DEFAULT_CATALOG.length) {
-          const csvElements = await loadStoryElementsFromCSV();
-          if (csvElements.length > elements.length) {
-            elements = csvElements;
+          const apiElements = await loadStoryElementsFromAPI();
+          if (apiElements.length > elements.length) {
+            elements = apiElements;
           }
         }
 
@@ -465,9 +463,13 @@ export const useStoryElements = (): UseStoryElementsReturn => {
     try {
       let elements: StoryElement[] = [];
       
-      elements = await loadStoryElementsFromAPI();
-      if (elements.length === 0) {
-        elements = await loadStoryElementsFromCSV();
+      // Try CSV first, then API
+      elements = await loadStoryElementsFromCSV();
+      if (elements.length <= DEFAULT_CATALOG.length) {
+        const apiElements = await loadStoryElementsFromAPI();
+        if (apiElements.length > elements.length) {
+          elements = apiElements;
+        }
       }
 
       const categories = [...new Set(elements.map(e => e.category).filter(Boolean))];
