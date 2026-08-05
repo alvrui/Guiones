@@ -80,7 +80,7 @@ export const StoryElementBrowser = ({
     return (
       <div className={`flex items-center justify-center p-8 ${className}`}>
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-        <p className="ml-4 text-gray-600">Cargando cat\u00e1logo...</p>
+        <p className="ml-4 text-gray-600">Cargando catálogo...</p>
       </div>
     );
   }

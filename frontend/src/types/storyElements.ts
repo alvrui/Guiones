@@ -6,7 +6,7 @@ export interface StoryElement {
   name: string; // Name of the story element
   description: string; // Description of what this element represents
   category?: string; // Category or group it belongs to
-  type?: string; // Type of element (e.g., "Conflicto", "Revelaci\u00f3n", etc.)
+  type?: string; // Type of element (e.g., "Conflicto", "Revelación", etc.)
   tags?: string[]; // Tags for filtering
   archetype?: string; // Related archetype if applicable
   example?: string; // Example of usage

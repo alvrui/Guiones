@@ -1,5 +1,4 @@
 // Hook for managing Story Elements catalog
-// ONLY uses CSV - no API, no DEFAULT_CATALOG
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { 
   StoryElement, 
@@ -7,6 +6,67 @@ import {
   StoryElementSortBy,
   StoryElementsCatalog 
 } from "../types/storyElements";
+
+// Default story elements catalog (fallback when CSV is not loaded)
+// This is a minimal set to ensure the app works without CSV
+const DEFAULT_CATALOG: StoryElement[] = [
+  {
+    id: "se-001",
+    name: "Conflicto Central",
+    description: "El conflicto principal que impulsa la historia",
+    category: "Estructura",
+    type: "Conflicto",
+    tags: ["principal", "obligatorio"],
+  },
+  {
+    id: "se-002",
+    name: "Revelación",
+    description: "Momento en que se revela información crucial",
+    category: "Estructura",
+    type: "Revelación",
+    tags: ["clave", "sorpresa"],
+  },
+  {
+    id: "se-003",
+    name: "Clímax",
+    description: "El punto de mayor tensión en la historia",
+    category: "Estructura",
+    type: "Clímax",
+    tags: ["tensión", "cumulativo"],
+  },
+  {
+    id: "se-004",
+    name: "Giro Argumental",
+    description: "Cambio inesperado en la dirección de la historia",
+    category: "Estructura",
+    type: "Giro Argumental",
+    tags: ["sorpresa", "cambio"],
+  },
+  {
+    id: "se-005",
+    name: "Exposición",
+    description: "Presentación del contexto y personajes",
+    category: "Estructura",
+    type: "Exposición",
+    tags: ["inicio", "contexto"],
+  },
+  {
+    id: "se-006",
+    name: "Desarrollo",
+    description: "Desarrollo de la trama y evolución de personajes",
+    category: "Estructura",
+    type: "Desarrollo",
+    tags: ["progreso", "evolución"],
+  },
+  {
+    id: "se-007",
+    name: "Resolución",
+    description: "Resolución del conflicto central",
+    category: "Estructura",
+    type: "Resolución",
+    tags: ["final", "cierre"],
+  },
+];
 
 // Helper function to parse a CSV line handling quoted fields
 const parseCSVLine = (line: string): string[] => {
@@ -116,7 +176,7 @@ const parseCSVToStoryElements = (csvContent: string): StoryElement[] => {
           // For any other field, try to match by partial name
           if (header.includes('name') || header.includes('nombre')) {
             element.name = value;
-          } else if (header.includes('description') || header.includes('descripción')) {
+          } else if (header.includes('description') || header.includes('descripci\u00f3n')) {
             element.description = value;
           } else if (header.includes('archetype') || header.includes('arquetipo')) {
             element.archetype = value;
@@ -134,7 +194,7 @@ const parseCSVToStoryElements = (csvContent: string): StoryElement[] => {
   return elements;
 };
 
-// Function to load CSV from public folder
+// Function to load CSV from public folder or API
 const loadStoryElementsFromCSV = async (): Promise<StoryElement[]> => {
   try {
     // Try to load from public folder
@@ -147,7 +207,28 @@ const loadStoryElementsFromCSV = async (): Promise<StoryElement[]> => {
     console.warn("Could not load story elements from CSV:", error);
   }
   
-  return [];
+  return DEFAULT_CATALOG;
+};
+
+// Function to load from API (if available)
+const loadStoryElementsFromAPI = async (): Promise<StoryElement[]> => {
+  try {
+    // Use the same base URL logic as api.ts
+    // In development, backend is on port 8002
+    const baseURL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+      ? "http://localhost:8002/api"
+      : `http://${window.location.hostname}:8002/api`;
+    
+    const response = await fetch(`${baseURL}/story-elements`);
+    if (response.ok) {
+      const data = await response.json();
+      return data.elements || DEFAULT_CATALOG;
+    }
+  } catch (error) {
+    console.warn("Could not load story elements from API:", error);
+  }
+  
+  return DEFAULT_CATALOG;
 };
 
 export interface UseStoryElementsReturn {
@@ -196,21 +277,18 @@ export const useStoryElements = (): UseStoryElementsReturn => {
       setError(null);
 
       try {
-        // ONLY load from CSV
-        const elements = await loadStoryElementsFromCSV();
+        // Try CSV first (should work in development), then API, then fallback to default
+        let elements: StoryElement[] = [];
         
-        if (elements.length === 0) {
-          setError("No se pudo cargar el catálogo de Story Elements. Asegúrate de que el archivo CSV esté disponible.");
-          setCatalog({
-            elements: [],
-            categories: [],
-            types: [],
-            tags: [],
-            archetypes: [],
-            version: "1.0",
-            lastUpdated: new Date().toISOString(),
-          });
-          return;
+        // First try CSV from public folder
+        elements = await loadStoryElementsFromCSV();
+        
+        // If CSV didn't work or returned few elements, try API
+        if (elements.length <= DEFAULT_CATALOG.length) {
+          const apiElements = await loadStoryElementsFromAPI();
+          if (apiElements.length > elements.length) {
+            elements = apiElements;
+          }
         }
 
         // Extract metadata
@@ -243,6 +321,22 @@ export const useStoryElements = (): UseStoryElementsReturn => {
       } catch (err) {
         setError("Error al cargar el catálogo de Story Elements");
         console.error("Error loading story elements:", err);
+        
+        // Fallback to default catalog
+        const categories = [...new Set(DEFAULT_CATALOG.map(e => e.category).filter(Boolean))];
+        const types = [...new Set(DEFAULT_CATALOG.map(e => e.type).filter(Boolean))];
+        const tags = [...new Set(DEFAULT_CATALOG.flatMap(e => e.tags || []).filter(Boolean))];
+        const archetypes = [...new Set(DEFAULT_CATALOG.map(e => e.archetype).filter(Boolean))];
+
+        setCatalog({
+          elements: DEFAULT_CATALOG,
+          categories,
+          types,
+          tags,
+          archetypes,
+          version: "1.0",
+          lastUpdated: new Date().toISOString(),
+        });
       } finally {
         setLoading(false);
       }
@@ -367,8 +461,17 @@ export const useStoryElements = (): UseStoryElementsReturn => {
     setError(null);
 
     try {
-      const elements = await loadStoryElementsFromCSV();
+      let elements: StoryElement[] = [];
       
+      // Try CSV first, then API
+      elements = await loadStoryElementsFromCSV();
+      if (elements.length <= DEFAULT_CATALOG.length) {
+        const apiElements = await loadStoryElementsFromAPI();
+        if (apiElements.length > elements.length) {
+          elements = apiElements;
+        }
+      }
+
       const categories = [...new Set(elements.map(e => e.category).filter(Boolean))];
       const types = [...new Set(elements.map(e => e.type).filter(Boolean))];
       const tags = [...new Set(elements.flatMap(e => e.tags || []).filter(Boolean))];

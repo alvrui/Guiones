@@ -314,7 +314,7 @@ const PlotFormNew = ({
           </div>
 
           <p className="text-xs text-gray-500 mb-3">
-            Selecciona Story Elements del cat\u00e1logo para construir tu trama
+            Selecciona Story Elements del catálogo para construir tu trama
           </p>
 
           {/* Main layout: Browser on left, Selection on right */}

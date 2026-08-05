@@ -60,7 +60,7 @@ export const PlotStoryElementsPanel = ({
           No hay Story Elements seleccionados
         </p>
         <p className="text-xs text-gray-400 text-center mt-1">
-          Selecciona del cat\u00e1logo para a\u00f1adir
+          Selecciona del catálogo para añadir
         </p>
       </div>
     );
