@@ -72,7 +72,7 @@ export const PlotStoryElementsPanel = ({
         Story Elements seleccionados ({selections.length})
       </h3>
 
-      <div className="space-y-3 max-h-96 overflow-y-auto">
+      <div className="space-y-3">
         {selections.map((selection, index) => {
           const storyElement = getStoryElementForSelection(selection);
           
