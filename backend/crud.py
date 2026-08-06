@@ -574,3 +574,56 @@ def import_proyecto_from_json(db: Session, data: Dict[str, Any]) -> Optional[mod
         create_estructura(db, estructura_create, proyecto.id)
     
     return proyecto
+
+
+# --- AgenteIA CRUD Operations ---
+
+def get_agente_ia(db: Session, agente_id: str) -> Optional[models.AgenteIA]:
+    """Get a single AI agent by ID."""
+    return db.query(models.AgenteIA).filter(models.AgenteIA.id == agente_id).first()
+
+
+def get_agentes_ia(db: Session, skip: int = 0, limit: int = 100) -> List[models.AgenteIA]:
+    """Get all AI agents with pagination."""
+    return db.query(models.AgenteIA).offset(skip).limit(limit).all()
+
+
+def get_agentes_ia_by_seccion(db: Session, seccion: str) -> List[models.AgenteIA]:
+    """Get all AI agents for a specific section."""
+    return db.query(models.AgenteIA).filter(models.AgenteIA.seccion == seccion).all()
+
+
+def create_agente_ia(db: Session, agente: schemas.AgenteIACreate) -> models.AgenteIA:
+    """Create a new AI agent."""
+    db_agente = models.AgenteIA(**agente.model_dump())
+    db.add(db_agente)
+    db.commit()
+    db.refresh(db_agente)
+    return db_agente
+
+
+def update_agente_ia(db: Session, agente_id: str, agente: schemas.AgenteIAUpdate) -> Optional[models.AgenteIA]:
+    """Update an existing AI agent."""
+    db_agente = get_agente_ia(db, agente_id)
+    if db_agente is None:
+        return None
+    
+    agente_data = agente.model_dump(exclude_unset=True)
+    for field, value in agente_data.items():
+        setattr(db_agente, field, value)
+    
+    db.add(db_agente)
+    db.commit()
+    db.refresh(db_agente)
+    return db_agente
+
+
+def delete_agente_ia(db: Session, agente_id: str) -> Optional[models.AgenteIA]:
+    """Delete an AI agent."""
+    db_agente = get_agente_ia(db, agente_id)
+    if db_agente is None:
+        return None
+    
+    db.delete(db_agente)
+    db.commit()
+    return db_agente
