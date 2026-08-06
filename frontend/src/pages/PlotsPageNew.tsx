@@ -6,21 +6,13 @@ import { usePlots } from "../hooks/usePlots";
 import { useProject } from "../hooks/useProject";
 import { useCharacters } from "../hooks/useCharacters";
 import { useStoryElements } from "../hooks/useStoryElements";
-import { 
-  Trama, 
-  TramaCreate, 
-  TramaUpdate, 
-  ArquetipoNarrativo, 
-  Estado, 
-  ElementoNarrativo 
-} from "../types";
+import { Trama, TramaCreate, TramaUpdate, ElementoNarrativo } from "../types";
 import { PlotStoryElementSelection, StoryElement } from "../types/storyElements";
 import { Modal } from "../components/Modal";
 import { AIButton } from "../components/AIButton";
-import { 
-  StoryElementBrowser,
-  PlotStoryElementsPanel 
-} from "../components/StoryElements";
+import { StoryElementSearch } from "../components/StoryElementSearch";
+import { StoryElementCard } from "../components/StoryElementCard";
+import { StoryElementBrowser, PlotStoryElementsPanel } from "../components/StoryElements";
 
 // Convert old elementos_narrativos to new selections format
 const convertToSelections = (
@@ -75,6 +67,19 @@ const PlotFormNew = ({
     return map;
   }, [elements]);
 
+  // Group elements by category
+  const elementsByCategory = useMemo(() => {
+    const grouped: Record<string, StoryElement[]> = {};
+    elements.forEach(element => {
+      const category = element.category?.toUpperCase() || "OTROS";
+      if (!grouped[category]) {
+        grouped[category] = [];
+      }
+      grouped[category].push(element);
+    });
+    return grouped;
+  }, [elements]);
+
   // Convert existing trama to new format
   const initialSelections = useMemo(() => {
     if (trama?.elementos_narrativos) {
@@ -93,7 +98,138 @@ const PlotFormNew = ({
     notas: trama?.notas || "",
   });
 
+  // Single state for all selections (genre, setting, and plot elements combined)
   const [selections, setSelections] = useState<PlotStoryElementSelection[]>(initialSelections);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Get selected genre and setting IDs
+  const selectedGenreId = useMemo(() => {
+    const genreSelection = selections.find(s => {
+      const element = storyElementsMap.get(s.storyElementId);
+      return element?.category?.toUpperCase() === "GENRE";
+    });
+    return genreSelection?.storyElementId || null;
+  }, [selections, storyElementsMap]);
+
+  const selectedSettingId = useMemo(() => {
+    const settingSelection = selections.find(s => {
+      const element = storyElementsMap.get(s.storyElementId);
+      return element?.category?.toUpperCase() === "SETTING";
+    });
+    return settingSelection?.storyElementId || null;
+  }, [selections, storyElementsMap]);
+
+  // Check if an element is selected
+  const isElementSelected = useCallback((elementId: string) => {
+    return selections.some(s => s.storyElementId === elementId);
+  }, [selections]);
+
+  // Check if genre is selected
+  const isGenreSelected = useCallback((elementId: string) => {
+    return selectedGenreId === elementId;
+  }, [selectedGenreId]);
+
+  // Check if setting is selected
+  const isSettingSelected = useCallback((elementId: string) => {
+    return selectedSettingId === elementId;
+  }, [selectedSettingId]);
+
+  // Handle genre selection (only one allowed, replaces existing)
+  const handleGenreSelect = useCallback((element: StoryElement) => {
+    setSelections(prev => {
+      // Remove any existing genre selection
+      const filtered = prev.filter(s => {
+        const el = storyElementsMap.get(s.storyElementId);
+        return el?.category?.toUpperCase() !== "GENRE";
+      });
+      
+      // Add new genre selection at the beginning
+      return [
+        {
+          storyElementId: element.id,
+          order: 0,
+          customDescription: "",
+          customName: element.name,
+        },
+        ...filtered.map((s, index) => ({ ...s, order: index + 1 })),
+      ];
+    });
+  }, [storyElementsMap]);
+
+  // Handle setting selection (only one allowed, replaces existing)
+  const handleSettingSelect = useCallback((element: StoryElement) => {
+    setSelections(prev => {
+      // Remove any existing setting selection
+      const filtered = prev.filter(s => {
+        const el = storyElementsMap.get(s.storyElementId);
+        return el?.category?.toUpperCase() !== "SETTING";
+      });
+      
+      // Find if there's a genre selected to maintain order
+      const hasGenre = filtered.some(s => {
+        const el = storyElementsMap.get(s.storyElementId);
+        return el?.category?.toUpperCase() === "GENRE";
+      });
+      
+      // Add new setting selection after genre (if exists) or at the beginning
+      const genreCount = hasGenre ? 1 : 0;
+      const insertPosition = genreCount;
+      
+      return [
+        ...filtered.slice(0, insertPosition),
+        {
+          storyElementId: element.id,
+          order: insertPosition,
+          customDescription: "",
+          customName: element.name,
+        },
+        ...filtered.slice(insertPosition).map((s, index) => ({
+          ...s,
+          order: insertPosition + index + 1,
+        })),
+      ];
+    });
+  }, [storyElementsMap]);
+
+  // Handle plot element selection (multiple allowed)
+  const handlePlotElementSelect = useCallback((element: StoryElement) => {
+    // Don't add if already selected
+    if (isElementSelected(element.id)) return;
+    
+    // Don't add if it's a genre or setting (those have their own selectors)
+    const category = element.category?.toUpperCase();
+    if (category === "GENRE" || category === "SETTING") return;
+    
+    setSelections(prev => {
+      const newOrder = prev.length;
+      
+      return [
+        ...prev,
+        {
+          storyElementId: element.id,
+          order: newOrder,
+          customDescription: "",
+          customName: element.name,
+        },
+      ];
+    });
+  }, [isElementSelected, storyElementsMap]);
+
+  // Handle deselection
+  const handleDeselect = useCallback((elementId: string) => {
+    setSelections(prev => {
+      const removedIndex = prev.findIndex(s => s.storyElementId === elementId);
+      if (removedIndex === -1) return prev;
+      
+      const newSelections = prev.filter((_, index) => index !== removedIndex);
+      
+      // Reorder remaining selections
+      return newSelections.map((s, index) => ({
+        ...s,
+        order: index,
+      }));
+    });
+  }, []);
 
   // Handle form change
   const handleChange = useCallback((
@@ -124,44 +260,17 @@ const PlotFormNew = ({
     });
   }, []);
 
-  // Handle story element selection
-  const handleSelectStoryElement = useCallback((element: StoryElement) => {
-    // Check if already selected
-    const existingIndex = selections.findIndex(
-      s => s.storyElementId === element.id
-    );
-    
-    if (existingIndex !== -1) {
-      // Already selected, do nothing (or could scroll to it)
-      return;
-    }
-
-    // Add new selection
-    setSelections((prev) => [
-      ...prev,
-      {
-        storyElementId: element.id,
-        order: prev.length,
-        customDescription: "",
-      },
-    ]);
-  }, [selections]);
-
-  // Handle story element deselection
-  const handleDeselectStoryElement = useCallback((elementId: string) => {
-    setSelections((prev) => 
-      prev.filter(s => s.storyElementId !== elementId)
-    );
-  }, []);
-
   // Handle move up
   const handleMoveUp = useCallback((index: number) => {
     setSelections((prev) => {
       if (index <= 0) return prev;
+      
       const newSelections = [...prev];
       [newSelections[index - 1], newSelections[index]] = 
         [newSelections[index], newSelections[index - 1]];
-      return newSelections;
+      
+      // Update orders
+      return newSelections.map((s, i) => ({ ...s, order: i }));
     });
   }, []);
 
@@ -169,10 +278,13 @@ const PlotFormNew = ({
   const handleMoveDown = useCallback((index: number) => {
     setSelections((prev) => {
       if (index >= prev.length - 1) return prev;
+      
       const newSelections = [...prev];
       [newSelections[index], newSelections[index + 1]] = 
         [newSelections[index + 1], newSelections[index]];
-      return newSelections;
+      
+      // Update orders
+      return newSelections.map((s, i) => ({ ...s, order: i }));
     });
   }, []);
 
@@ -214,6 +326,10 @@ const PlotFormNew = ({
     estilo: proyecto.estilo,
     tono_general: proyecto.tono_general,
     personajes_involucrados: formData.personajes_involucrados,
+    subtramas: formData.subtramas,
+    obstaculos: formData.obstaculos,
+    estado: formData.estado,
+    notas: formData.notas,
     storyElements: selections.map(s => {
       const element = getElementById(s.storyElementId);
       return element ? {
@@ -222,10 +338,9 @@ const PlotFormNew = ({
         description: element.description,
       } : null;
     }).filter(Boolean),
-    ...formData,
   }), [formData, proyecto, selections, getElementById]);
 
-  // Handle submit - convert selections back to old format
+  // Handle submit - selections are already in the correct order
   const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     
@@ -255,7 +370,7 @@ const PlotFormNew = ({
             </label>
             <AIButton
               field="titulo"
-              section="plot"
+              seccion="tramas"
               context={getAIContext()}
               onGenerate={(content) => handleGenerateField("titulo", content)}
             />
@@ -303,11 +418,9 @@ const PlotFormNew = ({
             </label>
             <AIButton
               field="elementos_narrativos"
-              section="plot"
+              seccion="tramas"
               context={getAIContext()}
               onGenerate={(content) => {
-                // Parse AI-generated story elements
-                // This would be enhanced in a future iteration
                 console.log("AI generated content:", content);
               }}
             />
@@ -317,23 +430,78 @@ const PlotFormNew = ({
             Selecciona Story Elements del catálogo para construir tu trama
           </p>
 
-          {/* Main layout: Browser on left, Selection on right */}
+          {/* Story Elements Selection Area */}
           <div className="flex gap-4 min-h-96">
-            {/* Story Elements Browser */}
-            <div className="flex-1">
-              <StoryElementBrowser
-                selectedElements={selections}
-                onSelect={handleSelectStoryElement}
-                onDeselect={handleDeselectStoryElement}
-              />
+            {/* Left side - Story Elements selection */}
+            <div className="flex-1 space-y-4">
+              {/* General Search */}
+              <div className="bg-white p-4 rounded-lg border border-gray-200">
+                <h3 className="font-bold text-gray-800 mb-3">Buscar Story Elements</h3>
+                <StoryElementSearch
+                  value={searchQuery}
+                  onSearch={setSearchQuery}
+                  placeholder="Buscar Story Elements..."
+                />
+              </div>
+
+              {/* Genre Section - Only 1 */}
+              <div className="bg-white p-4 rounded-lg border border-gray-200">
+                <h3 className="font-bold text-gray-800 mb-3">Género (Seleccionar 1)</h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {elementsByCategory.GENRE?.map((element) => (
+                    <StoryElementCard
+                      key={element.id}
+                      element={element}
+                      isSelected={isGenreSelected(element.id)}
+                      isFavorite={false}
+                      compact
+                      onClick={() => handleGenreSelect(element)}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Setting Section - Only 1 */}
+              <div className="bg-white p-4 rounded-lg border border-gray-200">
+                <h3 className="font-bold text-gray-800 mb-3">Escenario (Seleccionar 1)</h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {elementsByCategory.SETTING?.map((element) => (
+                    <StoryElementCard
+                      key={element.id}
+                      element={element}
+                      isSelected={isSettingSelected(element.id)}
+                      isFavorite={false}
+                      compact
+                      onClick={() => handleSettingSelect(element)}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Plot Elements - Multiple (excludes GENRE and SETTING) */}
+              <div className="bg-white p-4 rounded-lg border border-gray-200">
+                <h3 className="font-bold text-gray-800 mb-3">Elementos de Trama (Varios)</h3>
+                <p className="text-xs text-gray-500 mb-2">
+                  Selecciona elementos para la trama (excluye Género y Escenario)
+                </p>
+                <StoryElementBrowser
+                  selectedElements={selections}
+                  onSelect={handlePlotElementSelect}
+                  onDeselect={handleDeselect}
+                  excludeCategories={["GENRE", "SETTING"]}
+                />
+              </div>
             </div>
 
-            {/* Selected Story Elements Panel */}
+            {/* Right side - Selected Story Elements Panel */}
             <div className="w-80">
               <PlotStoryElementsPanel
                 selections={selections}
                 onRemove={(index) => {
-                  setSelections(prev => prev.filter((_, i) => i !== index));
+                  setSelections(prev => {
+                    const newSelections = prev.filter((_, i) => i !== index);
+                    return newSelections.map((s, i) => ({ ...s, order: i }));
+                  });
                 }}
                 onMoveUp={handleMoveUp}
                 onMoveDown={handleMoveDown}
@@ -388,7 +556,7 @@ const PlotFormNew = ({
             </label>
             <AIButton
               field="obstaculos"
-              section="plot"
+              seccion="tramas"
               context={getAIContext()}
               onGenerate={(content) => handleGenerateField("obstaculos", content)}
             />
@@ -433,7 +601,7 @@ const PlotFormNew = ({
             </label>
             <AIButton
               field="notas"
-              section="plot"
+              seccion="tramas"
               context={getAIContext()}
               onGenerate={(content) => handleGenerateField("notas", content)}
             />

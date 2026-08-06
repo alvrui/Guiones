@@ -1,5 +1,5 @@
 // StoryElementBrowser component - browser for story elements catalog
-import { useCallback, useState } from "react";
+import { useCallback, useState, useMemo } from "react";
 import { StoryElement, PlotStoryElementSelection } from "../types/storyElements";
 import { StoryElementCard } from "./StoryElementCard";
 import { StoryElementSearch } from "./StoryElementSearch";
@@ -11,6 +11,7 @@ interface StoryElementBrowserProps {
   onSelect: (element: StoryElement) => void;
   onDeselect: (elementId: string) => void;
   className?: string;
+  excludeCategories?: string[];
 }
 
 export const StoryElementBrowser = ({
@@ -18,9 +19,10 @@ export const StoryElementBrowser = ({
   onSelect,
   onDeselect,
   className = "",
+  excludeCategories = [],
 }: StoryElementBrowserProps) => {
   const {
-    filteredElements,
+    filteredElements: hookFilteredElements,
     loading,
     error,
     filters,
@@ -36,6 +38,14 @@ export const StoryElementBrowser = ({
     getUniqueTags,
     getUniqueArchetypes,
   } = useStoryElements();
+
+  // Filter out excluded categories from the hook's filtered elements
+  const filteredElements = useMemo(() => {
+    return hookFilteredElements.filter(element => {
+      const category = element.category?.toUpperCase();
+      return !excludeCategories.some(excluded => excluded.toUpperCase() === category);
+    });
+  }, [hookFilteredElements, excludeCategories]);
 
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
