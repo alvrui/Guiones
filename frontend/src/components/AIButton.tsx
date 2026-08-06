@@ -203,7 +203,7 @@ export const AIButton = ({
           <div className="p-3 border-b border-gray-200 flex justify-between items-center">
             <div>
               <h4 className="font-medium text-sm text-gray-700">
-                Conversaci\u00f3n con IA
+                Conversación con IA
               </h4>
               {agenteSeleccionado && (
                 <p className="text-xs text-gray-500">
@@ -215,7 +215,7 @@ export const AIButton = ({
               <button
                 onClick={clearConversation}
                 className="text-xs text-gray-500 hover:text-gray-700"
-                title="Limpiar conversaci\u00f3n"
+                title="Limpiar conversación"
               >
                 \ud83d\uddd1\ufe0f
               </button>
@@ -236,14 +236,14 @@ export const AIButton = ({
                 type="text"
                 value={customPrompt}
                 onChange={(e) => setCustomPrompt(e.target.value)}
-                placeholder={`Escribe una petici\u00f3n espec\u00edfica para ${field}...`}
+                placeholder={`Escribe una petición específica para ${field}...`}
                 className="flex-1 p-2 border border-gray-300 rounded text-sm"
               />
               <button
                 onClick={() => handleGenerate(true)}
                 disabled={isLoading || !customPrompt.trim()}
                 className="px-3 py-2 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 disabled:opacity-50"
-                title="Enviar petici\u00f3n personalizada"
+                title="Enviar petición personalizada"
               >
                 \u27a4
               </button>
@@ -253,7 +253,7 @@ export const AIButton = ({
           <div className="p-3 max-h-80 overflow-y-auto">
             {conversation.length === 0 ? (
               <p className="text-sm text-gray-500 text-center">
-                No hay mensajes a\u00fan. Haz clic en \ud83e\udd16 para generar contenido.
+                No hay mensajes aún. Haz clic en \ud83e\udd16 para generar contenido.
               </p>
             ) : (
               conversation.map((message) => (
@@ -269,7 +269,7 @@ export const AIButton = ({
                     <span className={`text-xs font-medium ${
                       message.role === "user" ? "text-gray-600" : "text-blue-600"
                     }`}>
-                      {message.role === "user" ? "T\u00fa" : "Asistente IA"}
+                      {message.role === "user" ? "Tú" : "Asistente IA"}
                     </span>
                     <span className="text-xs text-gray-400">
                       {message.timestamp.toLocaleTimeString()}
@@ -320,7 +320,7 @@ export const AIButton = ({
           onClick={toggleConversation}
           className="mt-1 px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded hover:bg-gray-200 transition-colors"
         >
-          \ud83d\udcac Ver conversaci\u00f3n ({conversation.length})
+          \ud83d\udcac Ver conversación ({conversation.length})
         </button>
       )}
     </div>

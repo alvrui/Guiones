@@ -85,7 +85,7 @@ const PlotFormNew = ({
 
   const [formData, setFormData] = useState({
     titulo: trama?.titulo || "",
-    arquetipo_narrativo: trama?.arquetipo_narrativo || "Viaje del H\u00e9roe",
+    arquetipo_narrativo: trama?.arquetipo_narrativo || "Viaje del Héroe",
     personajes_involucrados: trama?.personajes_involucrados || [],
     subtramas: trama?.subtramas || [],
     obstaculos: trama?.obstaculos || [],
@@ -247,11 +247,11 @@ const PlotFormNew = ({
           {trama ? "Editar Trama" : "Nueva Trama"}
         </h2>
 
-        {/* T\u00edtulo */}
+        {/* Título */}
         <div>
           <div className="flex justify-between items-center mb-1">
             <label htmlFor="titulo" className="block text-sm font-medium text-gray-700">
-              T\u00edtulo *
+              Título *
             </label>
             <AIButton
               field="titulo"
@@ -267,7 +267,7 @@ const PlotFormNew = ({
             value={formData.titulo}
             onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded-md"
-            placeholder="Ej: La Conspiraci\u00f3n del Coronel"
+            placeholder="Ej: La Conspiración del Coronel"
             required
           />
         </div>
@@ -284,10 +284,10 @@ const PlotFormNew = ({
             onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded-md"
           >
-            <option value="Viaje del H\u00e9roe">Viaje del H\u00e9roe</option>
+            <option value="Viaje del Héroe">Viaje del Héroe</option>
             <option value="Tragedia">Tragedia</option>
             <option value="Comedia">Comedia</option>
-            <option value="B\u00fasqueda">B\u00fasqueda</option>
+            <option value="Búsqueda">Búsqueda</option>
             <option value="Aventura">Aventura</option>
             <option value="Misterio">Misterio</option>
             <option value="Romance">Romance</option>
@@ -380,11 +380,11 @@ const PlotFormNew = ({
           </div>
         </div>
 
-        {/* Obst\u00e1culos */}
+        {/* Obstáculos */}
         <div className="mt-6">
           <div className="flex justify-between items-center mb-1">
             <label htmlFor="obstaculos" className="block text-sm font-medium text-gray-700">
-              Obst\u00e1culos
+              Obstáculos
             </label>
             <AIButton
               field="obstaculos"
@@ -445,7 +445,7 @@ const PlotFormNew = ({
             onChange={handleChange}
             rows={3}
             className="w-full p-2 border border-gray-300 rounded-md"
-            placeholder="Informaci\u00f3n adicional sobre la trama"
+            placeholder="Información adicional sobre la trama"
           />
         </div>
 
@@ -537,14 +537,14 @@ const PlotCard = ({
         {trama.obstaculos && trama.obstaculos.length > 0 && (
           <div className="pt-2 border-t border-gray-100">
             <p className="text-sm text-gray-600">
-              <strong>Obst\u00e1culos:</strong>
+              <strong>Obstáculos:</strong>
             </p>
             <ul className="text-sm text-gray-800 mt-1 list-disc list-inside">
               {trama.obstaculos.slice(0, 3).map((obstaculo, index) => (
                 <li key={index}>{obstaculo}</li>
               ))}
               {trama.obstaculos.length > 3 && (
-                <li className="text-gray-500">+{trama.obstaculos.length - 3} m\u00e1s</li>
+                <li className="text-gray-500">+{trama.obstaculos.length - 3} más</li>
               )}
             </ul>
           </div>
@@ -608,7 +608,7 @@ export const PlotsPageNew = () => {
 
   // Handle delete plot
   const handleDeletePlot = async (id: string) => {
-    if (window.confirm("\u00bfEst\u00e1s seguro de que quieres borrar esta trama? Esto afectar\u00e1 a las escenas que la referencian.")) {
+    if (window.confirm("¿Estás seguro de que quieres borrar esta trama? Esto afectará a las escenas que la referencian.")) {
       await deleteTrama(id);
     }
   };
@@ -636,7 +636,7 @@ export const PlotsPageNew = () => {
   const proyectoData = {
     id: proyectoActual?.id || "",
     estilo: proyectoActual?.estilo || "Realista",
-    tono_general: proyectoActual?.tono_general || "Melanc\u00f3lico",
+    tono_general: proyectoActual?.tono_general || "Melancólico",
   };
 
   return (
@@ -684,7 +684,7 @@ export const PlotsPageNew = () => {
                   </div>
                 ) : tramas.length === 0 ? (
                   <div className="col-span-full text-center p-8 text-gray-500 bg-white rounded-lg border border-gray-200">
-                    <p>No hay tramas creadas a\u00fan.</p>
+                    <p>No hay tramas creadas aún.</p>
                     <p className="mt-2">Haz clic en "Nueva Trama" para empezar.</p>
                   </div>
                 ) : (

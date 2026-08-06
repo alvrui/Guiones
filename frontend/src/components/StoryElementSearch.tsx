@@ -84,7 +84,7 @@ export const StoryElementSearch = ({
         <button
           onClick={handleClear}
           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-          title="Limpiar b\u00fasqueda"
+          title="Limpiar búsqueda"
         >
           \u2715
         </button>

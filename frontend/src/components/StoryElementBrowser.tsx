@@ -107,7 +107,7 @@ export const StoryElementBrowser = ({
           <button
             onClick={() => setViewMode("grid")}
             className={`p-2 rounded ${viewMode === "grid" ? "bg-blue-100 text-blue-600" : "bg-gray-100 text-gray-600"}`}
-            title="Vista en cuadr\u00edcula"
+            title="Vista en cuadrícula"
           >
             \u2630
           </button>

@@ -110,14 +110,14 @@ export const PlotStoryElementsPanel = ({
               {/* Custom description */}
               <div className="mb-2">
                 <label className="block text-xs font-medium text-gray-700 mb-1">
-                  Descripci\u00f3n personalizada (opcional)
+                  Descripción personalizada (opcional)
                 </label>
                 <textarea
                   value={selection.customDescription || ""}
                   onChange={(e) => handleDescriptionChange(index, e)}
                   className="w-full p-2 border border-gray-300 rounded text-sm"
                   rows={2}
-                  placeholder="Personaliza la descripci\u00f3n para esta trama..."
+                  placeholder="Personaliza la descripción para esta trama..."
                 />
               </div>
 

@@ -181,14 +181,14 @@ export const StoryElementFiltersPanel = ({
           type="text"
           value={filters.searchQuery || ""}
           onChange={handleSearchChange}
-          placeholder="Nombre, descripci\u00f3n, tags..."
+          placeholder="Nombre, descripción, tags..."
           className="w-full p-2 border border-gray-300 rounded-md text-sm"
         />
       </div>
 
       {/* Quick filters */}
       <div className="mb-4">
-        <p className="text-sm font-medium text-gray-700 mb-2">R\u00e1pido</p>
+        <p className="text-sm font-medium text-gray-700 mb-2">Rápido</p>
         <div className="space-y-1">
           <label className="flex items-center gap-2">
             <input
@@ -220,7 +220,7 @@ export const StoryElementFiltersPanel = ({
         <div className="mb-4">
           <details className="border border-gray-200 rounded-md p-2">
             <summary className="font-medium text-gray-700 cursor-pointer flex justify-between items-center">
-              Categor\u00eda
+              Categoría
               {filters.categories && filters.categories.length > 0 && (
                 <span className="text-xs bg-blue-100 text-blue-700 px-1 rounded">
                   {filters.categories.length}
@@ -302,7 +302,7 @@ export const StoryElementFiltersPanel = ({
               ))}
               {tags.length > 20 && (
                 <p className="text-xs text-gray-500 mt-1 ml-2">
-                  +{tags.length - 20} m\u00e1s
+                  +{tags.length - 20} más
                 </p>
               )}
             </div>
@@ -352,7 +352,7 @@ export const StoryElementFiltersPanel = ({
         >
           <option value="name-asc">Nombre (A-Z)</option>
           <option value="name-desc">Nombre (Z-A)</option>
-          <option value="category-asc">Categor\u00eda (A-Z)</option>
+          <option value="category-asc">Categoría (A-Z)</option>
           <option value="type-asc">Tipo (A-Z)</option>
           <option value="last-used">Usados recientemente</option>
         </select>
