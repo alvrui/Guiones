@@ -507,14 +507,14 @@ const PlotCard = ({
             className="p-1 text-blue-500 hover:bg-blue-50 rounded"
             title="Editar"
           >
-            \u270f\ufe0f
+            ✏
           </button>
           <button
             onClick={() => onDelete(trama.id)}
             className="p-1 text-red-500 hover:bg-red-50 rounded"
             title="Borrar"
           >
-            \ud83d\uddd1\ufe0f
+            🗑
           </button>
         </div>
       </div>

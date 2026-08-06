@@ -129,7 +129,7 @@ export const PlotStoryElementsPanel = ({
                   className="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded hover:bg-gray-200 disabled:opacity-50"
                   title="Subir"
                 >
-                  \u2191
+                  ↑
                 </button>
                 <button
                   onClick={() => handleMoveDown(index)}
@@ -137,14 +137,14 @@ export const PlotStoryElementsPanel = ({
                   className="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded hover:bg-gray-200 disabled:opacity-50"
                   title="Bajar"
                 >
-                  \u2193
+                  ↓
                 </button>
                 <button
                   onClick={() => handleRemove(index)}
                   className="px-2 py-1 text-xs bg-red-100 text-red-600 rounded hover:bg-red-200"
                   title="Eliminar"
                 >
-                  \u2715
+                  ✕
                 </button>
               </div>
             </div>

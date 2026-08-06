@@ -189,7 +189,7 @@ export const AIButton = ({
         title={tooltipText}
         aria-label={tooltipText}
       >
-        {isLoading ? "\u23f3" : "\ud83e\udd16"}
+        {isLoading ? "⏳" : "🧠"}
         {unreadCount > 0 && (
           <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
             {unreadCount}
@@ -217,14 +217,14 @@ export const AIButton = ({
                 className="text-xs text-gray-500 hover:text-gray-700"
                 title="Limpiar conversación"
               >
-                \ud83d\uddd1\ufe0f
+                🗑
               </button>
               <button
                 onClick={toggleConversation}
                 className="text-xs text-gray-500 hover:text-gray-700"
                 title="Cerrar"
               >
-                \u2715
+                ✕
               </button>
             </div>
           </div>
@@ -245,7 +245,7 @@ export const AIButton = ({
                 className="px-3 py-2 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 disabled:opacity-50"
                 title="Enviar petición personalizada"
               >
-                \u27a4
+                ❤
               </button>
             </div>
           </div>
@@ -253,7 +253,7 @@ export const AIButton = ({
           <div className="p-3 max-h-80 overflow-y-auto">
             {conversation.length === 0 ? (
               <p className="text-sm text-gray-500 text-center">
-                No hay mensajes aún. Haz clic en \ud83e\udd16 para generar contenido.
+                No hay mensajes aún. Haz clic en 🧠 para generar contenido.
               </p>
             ) : (
               conversation.map((message) => (
@@ -284,21 +284,21 @@ export const AIButton = ({
                         onClick={() => handleAccept(message.id)}
                         className="px-3 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600 transition-colors"
                       >
-                        \u2705 Validar y Aplicar
+                        ✓ Validar y Aplicar
                       </button>
                       <button
                         onClick={() => handleReject(message.id)}
                         className="px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition-colors"
                       >
-                        \u274c Rechazar
+                        ❌ Rechazar
                       </button>
                     </div>
                   )}
                   {message.role === "assistant" && message.accepted === true && (
-                    <p className="text-xs text-green-600 mt-1">\u2713 Contenido validado y aplicado</p>
+                    <p className="text-xs text-green-600 mt-1">✓ Contenido validado y aplicado</p>
                   )}
                   {message.role === "assistant" && message.accepted === false && (
-                    <p className="text-xs text-red-600 mt-1">\u2717 Contenido rechazado</p>
+                    <p className="text-xs text-red-600 mt-1">✗ Contenido rechazado</p>
                   )}
                 </div>
               ))
@@ -320,7 +320,7 @@ export const AIButton = ({
           onClick={toggleConversation}
           className="mt-1 px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded hover:bg-gray-200 transition-colors"
         >
-          \ud83d\udcac Ver conversación ({conversation.length})
+          💬 Ver conversación ({conversation.length})
         </button>
       )}
     </div>

@@ -109,14 +109,14 @@ export const StoryElementBrowser = ({
             className={`p-2 rounded ${viewMode === "grid" ? "bg-blue-100 text-blue-600" : "bg-gray-100 text-gray-600"}`}
             title="Vista en cuadrícula"
           >
-            \u2630
+            ☀
           </button>
           <button
             onClick={() => setViewMode("list")}
             className={`p-2 rounded ${viewMode === "list" ? "bg-blue-100 text-blue-600" : "bg-gray-100 text-gray-600"}`}
             title="Vista en lista"
           >
-            \u2191\u2193
+            ↑↓
           </button>
         </div>
       </div>
